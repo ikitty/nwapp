@@ -54,10 +54,17 @@
 					<div class="panel_hd">
 						<div class="panel_hdin">
 							<div class="pull-right cfg_acts">
-								<button id="btnNew" class="btn btn_new" title="New">New</button>
-								<button id="btnSave" class="btn btn-primary btn_save hide" title="Save">Save</button>
+								<div class="btn-group">
+									<button class="btn"><i class="icon-cog"></i>Switch</button>
+									<button class="btn dropdown-toggle" data-toggle="dropdown">
+										<span class="caret"></span>
+									</button>
+									<ul id="wsList" class="dropdown-menu">
+										
+									</ul>
+								</div>
 							</div>
-							<h1>Lastest projects</h1>
+							<h1>Workspace<span id="lblWorkspace"></span></h1>
 						</div>
 						<div class="panel_bg2"></div>
 					</div>
@@ -96,9 +103,9 @@
 		<script src="js/lib/bootstrap.min.js"></script>
 		<script src="js/lib/date.js"></script>
 		<script src="js/lib/jf.core.js"></script>
+		<script src="js/data.js"></script>
 		<script src="js/base.js"></script>
 		<script src="js/alert.js"></script>
-		<script src="js/data.js"></script>
 		<script src="js/data.Setting.js"></script>
 		<script src="js/data.Workspace.js"></script>
 		<script src="js/default.js"></script>

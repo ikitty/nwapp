@@ -1,27 +1,21 @@
+//TODO:make it cool http://html5demos.com/history
 JF.M("base",(function(){
 	var p ={},pub={},
 		gui = require('nw.gui'),
 		fs = require('fs');
 	
 	p.V = {
-		tpl0:'No settings have been enabled!',
+		tpl0:'No Workspace!',
 		$status:$("#appStatus"),
 		$tip:$("#appTip"),
 		$navCollapse:$("#navCollapse"),
 		$secA:$("#secA"),
-		refreshConfig:function(files){
-			var len = files.length;
-			if (len==0) {
+		updateStatus:function(d){
+			if (!d.cnt) {
 				this.$status.html(this.tpl0);
 				return;
 			};
-			var html = [];
-			for (var i = len - 1; i >= 0; i--) {
-				html.push('<span class="badge_fname">'+files[i].name+'</span>');
-			};
-
-			this.$status.html(html.join('&nbsp;+&nbsp;'));
-
+			this.$status.html('Total workspaces: '+d.cnt);
 		}
 	};
 
@@ -35,8 +29,22 @@ JF.M("base",(function(){
 			JF.base.appRoot = process.execPath.substr(0,process.execPath.lastIndexOf('\\')+1);
 			JF.base.dataRoot = JF.base.appRoot+"data\\fwspace\\";
 			JF.base.initFile = JF.base.dataRoot+"app.ini";
+
+			//获取工作空间
+			if(!JF.opts.ignoreWorkspaceData){
+				$(window).on(JF.dataWorkspace.tName+'OnGetAll',function(e,d){
+
+					pub.curWorkspace = JF.data.getCurrentWorkspace(d.items);
+
+					p.V.updateStatus(d);
+
+				});
+			}
+			
+
 		},
 		onLoad:function(){
+
 			$("#btnClose").on("click",function(e){
 
 				var win = gui.Window.get();
@@ -71,16 +79,9 @@ JF.M("base",(function(){
 			//minimize to tray
 			this.initTray();
 
-			$(window).on('onConfigLoaded',function(e,d){
-				if (d.err) {
-					JF.alert.show(d.err.toString(),{
-						title:"Error on Loading HostSpirit's config File!"
-					});
-				}else{
-					
-				}
-			});
-
+			if (!JF.opts.ignoreWorkspaceData) {
+				JF.dataWorkspace.getAll();
+			};
 
 		},
 		initTray:function(){

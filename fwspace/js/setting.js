@@ -18,6 +18,12 @@ JF.M("setting",(function($){
 					document.getElementById(this.getAttribute('data-target')).value = this.value;
 				};
 			});
+			$("#ipt_exeLess1").on("change",function(e){
+				if (this.value.length>0) {
+					document.getElementById(this.getAttribute('data-target')).value = this.value;
+				};
+			});
+
 
 
 		},

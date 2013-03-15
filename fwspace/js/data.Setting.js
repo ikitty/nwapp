@@ -7,6 +7,7 @@ JF.M("dataSetting",(function($){
 		item0:{
 			'exeCss':'',
 			'exeImg':'',
+			'exeLess':'',
 			'createdAt':new Date().toString('yyyy-MM-dd HH:mm:ss'),
 			'modifiedAt':new Date().toString('yyyy-MM-dd HH:mm:ss')
 		}

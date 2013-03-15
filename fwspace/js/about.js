@@ -5,13 +5,8 @@ JF.M("about",(function(){
 	p.C= {
 		onLoad:function(){
 
-			$(window).on("onConfigLoaded",function(e){
-				setTimeout(function(){
-					JF.base.showTip('HostSpirit V'+JF.data.configData.version);
-					$("#txtVersion").html(JF.data.configData.version);
-				},200);
-				
-			});
+			JF.base.showTip('FWS V'+JF.data.version);
+			$("#txtVersion").html(JF.data.version);
 
 			$("#aboutBody").on("click","a",function(e){
 

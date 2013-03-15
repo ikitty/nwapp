@@ -143,10 +143,12 @@ JF.M("dataWorkspace",(function($){
 
 			item.modifiedAt = new Date().toString('yyyy-MM-dd HH:mm:ss');
 
-			var item1 = JF.data.objectToArray(item),
+			var item1 = JF.data.objectToArray(item,['id']),
 				sql = JF.data.getUpdateSQL(pub.tName,item,'id');
 
-			tx.executeSql(sql,item,function(tx){
+			item1.push(item.id);
+
+			tx.executeSql(sql,item1,function(tx){
 				$(window).trigger(pub.tName+'OnUpdated',[item]);
 			},function(tx,err){
 				$(window).trigger(pub.tName+'OnUpdatedError',[err]);
@@ -163,8 +165,18 @@ JF.M("dataWorkspace",(function($){
 
 			tx.executeSql(p.sql.getAll,[],function(tx,results){
 
-				$(window).trigger(pub.tName+'OnGetAll',[results]);
+				var items = [],
+					len = results.rows.length;
+				if (len>0) {
+					for (var i = len - 1; i >= 0; i--) {
+						items.push(results.rows.item(i));
+					};
+				};
 
+				$(window).trigger(pub.tName+'OnGetAll',[{'cnt':len,'items':items}]);
+
+			},function(tx,err){
+				$(window).trigger(pub.tName+'OnGetAllError',[err]);
 			});
 
 		});

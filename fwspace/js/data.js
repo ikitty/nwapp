@@ -9,14 +9,50 @@ JF.M("data",(function($){
 	var p ={},pub={};
 
 	p.C = {
-		onLoad:function(){
+		init:function(){
 			JF.db = openDatabase('fwspace','1.0','db for fwspace',4*1024*1024);
+			JF.dbLocal = localStorage;
 		}
 	};
 
-	pub.configData = {
-		version:'1.0',
-		files:[]
+	pub.version = "1.0.1";
+	/**
+	 * 获取当前工作空间
+	 * @param {Array} wsList 工作空间json数组
+	 */
+	pub.getCurrentWorkspace = function(wsList){
+		var item= JF.dbLocal['CurrentWorkspace'];
+		if (item) {
+			item = JSON.parse(item);
+		};
+		if (!wsList || wsList.length==0) {
+			return item;
+		};
+
+		if (!item) {
+			item = wsList[0];
+			pub.setCurrentWorkspace(item);
+			return item;
+		};
+
+		var len = wsList.length;
+		for (var i = len - 1; i >= 0; i--) {
+			if (item.id == wsList[i].id) {
+				item = wsList[i];
+				pub.setCurrentWorkspace(item);
+				break;
+			};
+		};
+
+		return item;
+
+	};
+	/**
+	 * 设置当前工作空间
+	 * @param {Object} item 工作空间json对象
+	 */
+	pub.setCurrentWorkspace = function(item){
+		JF.dbLocal['CurrentWorkspace'] = JSON.stringify(item);
 	};
 
 	/**
@@ -93,11 +129,15 @@ JF.M("data",(function($){
 	/**
 	 * 将列举对象转换成数组
 	 * @param {Object} obj json object
+	 * @param {Array} ignoreProperties 忽略的属性
 	 */
-	pub.objectToArray = function(obj){
-		var retVal = [];
+	pub.objectToArray = function(obj,ignoreProperties){
+		var retVal = [],
+			ignoreProperties = ignoreProperties ||[];
 		for (var c in obj) {
-			retVal.push(obj[c]);
+			if ($.inArray(c,ignoreProperties)==-1) {
+				retVal.push(obj[c]);
+			}
 		};
 		return retVal;
 	};
