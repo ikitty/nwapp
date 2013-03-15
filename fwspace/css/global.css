@@ -1,0 +1,63 @@
+@font-face {
+  font-family: Iceland;
+  src: url(../fonts/Iceland/Iceland-Regular.ttf);
+}
+* {
+  font-family: 'Iceland', 'sans-serif', '\5FAE\8F6F\96C5\9ED1';
+}
+body {
+  position: relative;
+  color: #fff;
+  font-size: 1.1em;
+  background-color: #333;
+}
+a {
+  color: #fff;
+  transition: all 0.4s linear;
+  -webkit-transition: all 0.4s linear;
+  -moz-transition: all 0.4s linear;
+  -ms-transition: all 0.4s linear;
+  -o-transition: all 0.4s linear;
+}
+.container,
+.container-fluid {
+  position: relative;
+}
+.navbar .brand {
+  padding-top: 5px;
+  padding-bottom: 0;
+}
+.page_main {
+  padding-top: 65px;
+}
+.mod_circle {
+  position: relative;
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  line-height: 40px;
+}
+.mod_circlebg {
+  border: 2px solid #ffffff;
+  border-image: initial;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: transparent;
+  border-radius: 50%;
+}
+.mod_circlebd {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  border-radius: 50%;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  right: 20px;
+}
