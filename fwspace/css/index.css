@@ -1,0 +1,9 @@
+.alert_noproject {
+  display: none;
+}
+.project_none .alert_noproject {
+  display: block;
+}
+.project_none .tabs_project {
+  display: none;
+}

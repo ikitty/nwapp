@@ -28,7 +28,7 @@ JF.M("home",(function(){
 			if (JF.base.curWorkspace) {
 				this.resetWSList();
 				$("#wsItem"+JF.base.curWorkspace.id).addClass('active');
-				alert('TODO:JF.dataProject.getAll('+JF.base.curWorkspace.name+')');
+				JF.dataProject.getAllByWorkspace(JF.base.curWorkspace.rootPath);
 			};
 		},
 		resetWSList:function(){
@@ -47,6 +47,7 @@ JF.M("home",(function(){
 		onLoad:function(){
 			p.V.$wsList.on("click","a",function(e){
 				p.C.switchWorspace(this.rel);
+				return false;
 			});
 		},
 		switchWorspace:function(id){
