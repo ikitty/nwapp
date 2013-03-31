@@ -1,7 +1,9 @@
 JF.M("dataWorkspace",(function($){
 	var p ={},pub={};
 	pub.tName = 'Workspace';
-	pub.fields = ['id unique',
+    // add autoincrement by Enix
+	// CREATE TABLE if not exists test (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name)
+	pub.fields = ['id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
 		'name',
 		'rootPath',
 		'remotePath',
@@ -24,14 +26,15 @@ JF.M("dataWorkspace",(function($){
 	};
 	p.M = {
 		item0:{
-			id:'e-icson-',
-			name:'易迅',
+            // remove id (id is autoincrement) by Enix
+            // modify test case
+			name:'测试',
 			rootPath:'E:\\icson\\',
-			remotePath:'/static/icson/',
-			ftpId:'172.25.34.21',
-			ftpPort:'21',
-			ftpUser:'b2b2c_static_ui',
-			ftpPwd:'b2b2c_static_ui',
+			remotePath:'/test/ic/',
+			ftpId:'1.1.1.1',
+			ftpPort:'1234',
+			ftpUser:'uName',
+			ftpPwd:'uPwd',
 			userName:process.env['USERNAME'],
 			createdAt:new Date().toString('yyyy-MM-dd HH:mm:ss'),
 			modifiedAt:new Date().toString('yyyy-MM-dd HH:mm:ss')

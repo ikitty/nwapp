@@ -173,7 +173,8 @@ JF.M("editorWorkspace",(function($){
 					data.rootPath+='\\';
 				};
 
-				data.id = data.rootPath.replace(/\\/gi,'-').replace(':','').toLowerCase();
+                // remove by enix
+				// data.id = data.rootPath.replace(/\\/gi,'-').replace(':','').toLowerCase();
 
 				//validate data.remotePath:字母数字和斜杠
 				if (data.remotePath.length!=0) {
