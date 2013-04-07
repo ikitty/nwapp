@@ -1,7 +1,7 @@
 {
 	"name": "hostspirit",
 	"main": "setting.html",
-	"version":"1.0.1",
+	"version":"1.0.2",
 	"description": "A host editor app of node-webkit",
 	"window": {
 		"toolbar": false,
