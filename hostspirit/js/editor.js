@@ -64,8 +64,14 @@ JF.M("editor",(function(){
 						return;
 					};
 
+					//update the file data
+					JF.data.fileData[data.name] = data.body;
+
 					//update the config
 					JF.data.config.save(JF.data.configData.files);
+
+					//hide the modal
+					pub.hide();
 
 					//refresh the page
 					if (p.M.isNew) {
