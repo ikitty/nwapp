@@ -1,6 +1,5 @@
-JF.M("dataProject",(function($){
-	var p ={},pub={},
-		fs = require('fs-extra'),
+J(function($,p,pub){
+	var fs = require('fs-extra'),
 		path = require('path');
 
 	pub.tName = 'Project';
@@ -16,10 +15,6 @@ JF.M("dataProject",(function($){
 			};
 		});
 	};
-
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-
-
-	return pub;
-})(jQuery));
+	pub.id="dataProject";
+	
+});

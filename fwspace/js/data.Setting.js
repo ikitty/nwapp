@@ -1,6 +1,8 @@
-JF.M("dataSetting",(function($){
-	var p ={},pub={},
-		fs = require('fs-extra'),
+/**
+ * application setting module
+ */
+J(function($,p,pub){
+	var fs = require('fs-extra'),
 		path = require('path');
 
 	p.M = {
@@ -16,21 +18,23 @@ JF.M("dataSetting",(function($){
 	pub.tName = "Setting";
 	pub.data = p.M.item0;
 
+	//controller
 	p.C = {
-		onLoad:function(){
+		init:function(){
 
-			fs.exists(JF.base.initFile,function(exists){
+			fs.exists(J.base.initFile,function(exists){
 
 				if (!exists) {
 
-					fs.mkdirs(JF.base.dataRoot,function(err){
+					fs.mkdirs(J.base.dataRoot,function(err){
 						if(err){
 							console.log(err);
 							return;
 						};
-						fs.writeFile(JF.base.initFile,JSON.stringify(pub.data),function(err){
+						fs.writeFile(J.base.initFile,JSON.stringify(pub.data),function(err){
 							$(window).trigger(pub.tName+"OnLoaded",[{
-								isOk:true
+								isOk:true,
+								isNew:true
 							}]);
 						});
 
@@ -40,11 +44,11 @@ JF.M("dataSetting",(function($){
 					return;
 				};
 
-				JF.base.showTip('Load Config data...');
+				J.base.showTip('Load Config data...');
 
-				fs.readFile(JF.base.initFile,function(err,data){
+				fs.readFile(J.base.initFile,function(err,data){
 
-					JF.base.hideTip();
+					J.base.hideTip();
 
 					if(err) {
 						$(window).trigger(pub.tName+"OnLoaded",[{
@@ -55,7 +59,7 @@ JF.M("dataSetting",(function($){
 
 					data = JSON.parse(data.toString());
 
-					JF.dataSetting.data = data;
+					J.dataSetting.data = data;
 
 					$(window).trigger(pub.tName+"OnLoaded",[{isOk:true}]);
 
@@ -73,7 +77,7 @@ JF.M("dataSetting",(function($){
 
 		var txt = JSON.stringify(item);
 
-		fs.writeFile(JF.base.initFile,txt,function(err){
+		fs.writeFile(J.base.initFile,txt,function(err){
 			if (err) {
 
 				$(window).trigger(pub.tName+"OnSavedError",[err]);
@@ -82,14 +86,10 @@ JF.M("dataSetting",(function($){
 
 			$(window).trigger(pub.tName+"OnSaved",[item]);
 
-			JF.dataSetting.data = item;
+			J.dataSetting.data = item;
 
 		});
 	};
-
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-
-
-	return pub;
-})(jQuery));
+	pub.id="dataSetting";
+	
+});

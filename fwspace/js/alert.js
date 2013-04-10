@@ -1,5 +1,4 @@
-JF.M("alert",(function(){
-	var p ={},pub={};
+J(function($,p,pub){
 	
 	p= {
 		V:{
@@ -55,8 +54,6 @@ JF.M("alert",(function(){
 	pub.hide = function(){
 		p.C.hide();
 	};
-
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-	return pub;
-})(jQuery));
+	pub.id = "alert";
+	
+});

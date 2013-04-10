@@ -1,9 +1,10 @@
-JF.M("dataWorkspace",(function($){
-	var p ={},pub={};
+J(function($,p,pub){
+
 	pub.tName = 'Workspace';
     // add autoincrement by Enix
 	// CREATE TABLE if not exists test (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name)
-	pub.fields = ['id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+	pub.fields = [
+		'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
 		'name',
 		'rootPath',
 		'remotePath',
@@ -20,8 +21,8 @@ JF.M("dataWorkspace",(function($){
 		createTable:'',
 		getAll:'',
 		init:function(){
-			this.createTable = JF.data.getTableSQL(pub.tName,pub.fields);
-			this.getAll = JF.data.getSelectSQL(pub.tName);
+			this.createTable = J.data.getTableSQL(pub.tName,pub.fields);
+			this.getAll = J.data.getSelectSQL(pub.tName);
 		}
 	};
 	p.M = {
@@ -35,7 +36,7 @@ JF.M("dataWorkspace",(function($){
 			ftpPort:'1234',
 			ftpUser:'uName',
 			ftpPwd:'uPwd',
-			userName:process.env['USERNAME'],
+			userName:J.base.userName,
 			createdAt:new Date().toString('yyyy-MM-dd HH:mm:ss'),
 			modifiedAt:new Date().toString('yyyy-MM-dd HH:mm:ss')
 		}
@@ -43,11 +44,11 @@ JF.M("dataWorkspace",(function($){
 	p.C = {
 		initTable:function(){
 
-			JF.db.transaction(function(tx){
+			J.db.transaction(function(tx){
 				tx.executeSql(p.sql.createTable,[],function(tx1){
 
-					var sql = JF.data.getInsertSQL(pub.tName,p.M.item0),
-						data = JF.data.objectToArray(p.M.item0);
+					var sql = J.data.getInsertSQL(pub.tName,p.M.item0),
+						data = J.data.objectToArray(p.M.item0);
 
 					tx.executeSql(sql,data);
 				});
@@ -55,7 +56,12 @@ JF.M("dataWorkspace",(function($){
 			});
 		},
 		onLoad:function(){
-			this.initTable();
+			//init table when the ini file is a new one
+			$(window).on(J.dataSetting.tName+'OnLoaded',function(e,d){\
+				if (d.isNew) {
+					p.C.initTable();
+				};
+			});
 		}
 	};
 
@@ -64,14 +70,14 @@ JF.M("dataWorkspace",(function($){
 	 */
 	pub.insert = function(item){
 
-		JF.db.transaction(function(tx){
+		J.db.transaction(function(tx){
 
 			item.userName = process.env['USERNAME'];
 			item.createdAt = item.modifiedAt = new Date().toString('yyyy-MM-dd HH:mm:ss');
 
-			var sql = JF.data.getInsertSQL(pub.tName,item);
+			var sql = J.data.getInsertSQL(pub.tName,item);
 
-			tx.executeSql(sql,JF.data.objectToArray(item),function(tx){
+			tx.executeSql(sql,J.data.objectToArray(item),function(tx){
 				$(window).trigger(pub.tName+'OnInserted',[item]);
 			},function(tx,err){
 				$(window).trigger(pub.tName+'OnInsertedError',[err]);
@@ -85,9 +91,9 @@ JF.M("dataWorkspace",(function($){
 	 * 根据rootPath自段获取记录
 	 */
 	pub.findByRootPath = function(rootPath,cbk){
-		JF.db.transaction(function(tx){
+		J.db.transaction(function(tx){
 
-			var sql = JF.data.getSelectSQL(pub.tName,'rootPath = ?');
+			var sql = J.data.getSelectSQL(pub.tName,'rootPath = ?');
 
 			tx.executeSql(sql,[rootPath],function(tx,results){
 
@@ -104,9 +110,9 @@ JF.M("dataWorkspace",(function($){
 	 * 根据id自段获取记录
 	 */
 	pub.findById = function(id,cbk){
-		JF.db.transaction(function(tx){
+		J.db.transaction(function(tx){
 
-			var sql = JF.data.getSelectSQL(pub.tName,'id = ?');
+			var sql = J.data.getSelectSQL(pub.tName,'id = ?');
 
 			tx.executeSql(sql,[id],function(tx,results){
 
@@ -122,9 +128,9 @@ JF.M("dataWorkspace",(function($){
 	 * 删除记录
 	 */
 	pub.deleteById = function(id){
-		JF.db.transaction(function(tx){
+		J.db.transaction(function(tx){
 
-			var sql = JF.data.getDeleteSQL(pub.tName,{'id':id});
+			var sql = J.data.getDeleteSQL(pub.tName,{'id':id});
 
 			tx.executeSql(sql,[id],function(tx){
 
@@ -142,12 +148,12 @@ JF.M("dataWorkspace",(function($){
 	 */
 	pub.update = function(item){
 		
-		JF.db.transaction(function(tx){
+		J.db.transaction(function(tx){
 
 			item.modifiedAt = new Date().toString('yyyy-MM-dd HH:mm:ss');
 
-			var item1 = JF.data.objectToArray(item,['id']),
-				sql = JF.data.getUpdateSQL(pub.tName,item,'id');
+			var item1 = J.data.objectToArray(item,['id']),
+				sql = J.data.getUpdateSQL(pub.tName,item,'id');
 
 			item1.push(item.id);
 
@@ -164,7 +170,7 @@ JF.M("dataWorkspace",(function($){
 	 * 获取所有记录
 	 */
 	pub.getAll = function(){
-		JF.db.transaction(function(tx){
+		J.db.transaction(function(tx){
 
 			tx.executeSql(p.sql.getAll,[],function(tx,results){
 
@@ -185,9 +191,7 @@ JF.M("dataWorkspace",(function($){
 		});
 	};
 
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
+	pub.id="dataWorkspace";
 
-
-	return pub;
-})(jQuery));
+	
+});

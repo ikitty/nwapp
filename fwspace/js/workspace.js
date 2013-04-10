@@ -1,6 +1,5 @@
-JF.M("workspace",(function($){
-	var p ={},pub={};
-	
+J(function($,p,pub){
+	pub.id ="workspace";
 	p.V = {
 		$list:$("#wsListBd"),
 		tpl:$("#tplWSItem").html(),
@@ -13,7 +12,7 @@ JF.M("workspace",(function($){
 			var cnt = d.cnt,
 				html = [];
 			for (var i = cnt - 1; i >= 0; i--) {
-				html.push(JF.EvalTpl(this.tpl,d.items[i]));
+				html.push(J.evalTpl(this.tpl,d.items[i],true));
 			};
 			this.$list.append(html.join(''));
 		}
@@ -21,7 +20,7 @@ JF.M("workspace",(function($){
 
 	p.C = {
 		init:function(){
-			$(window).on(JF.dataWorkspace.tName+'OnGetAll',function(e,d){
+			$(window).on(J.dataWorkspace.tName+'OnGetAll',function(e,d){
 				p.V.fillData(d);
 			});
 		},
@@ -31,14 +30,11 @@ JF.M("workspace",(function($){
 
 				var id = this.getAttribute('data-id');
 
-				JF.editorWorkspace.showEdit(id);
+				J.editorWorkspace.showEdit(id);
 
 				return false;
 			});
 		}
 	};
 	
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-	return pub;
-})(jQuery));
+});

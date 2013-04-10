@@ -1,6 +1,5 @@
-JF.M("home",(function(){
-	var p ={},pub={};
-
+J(function($,p,pub){
+	pub.id ="home";
 	pub.tName = 'home';
 
 	p.M = {
@@ -19,16 +18,16 @@ JF.M("home",(function(){
 			var cnt = d.cnt,
 				html = [];
 			for (var i = cnt - 1; i >= 0; i--) {
-				html.push(JF.EvalTpl(this.tplWSItem,d.items[i]));
+				html.push(J.evalTpl(this.tplWSItem,d.items[i],true));
 			};
 			this.$wsList.append(html.join(''));
 		},
 		fillCurWS:function(){
-			$("#lblWorkspace").html(JF.base.curWorkspace?' -'+JF.base.curWorkspace.name:'');
-			if (JF.base.curWorkspace) {
+			$("#lblWorkspace").html(J.base.curWorkspace?' -'+J.base.curWorkspace.name:'');
+			if (J.base.curWorkspace) {
 				this.resetWSList();
-				$("#wsItem"+JF.base.curWorkspace.id).addClass('active');
-				JF.dataProject.getAllByWorkspace(JF.base.curWorkspace.rootPath);
+				$("#wsItem"+J.base.curWorkspace.id).addClass('active');
+				J.dataProject.getAllByWorkspace(J.base.curWorkspace.rootPath);
 			};
 		},
 		resetWSList:function(){
@@ -38,7 +37,7 @@ JF.M("home",(function(){
 
 	p.C = {
 		init:function(){
-			$(window).on(JF.dataWorkspace.tName+'OnGetAll',function(e,d){
+			$(window).on(J.dataWorkspace.tName+'OnGetAll',function(e,d){
 				p.M.workspaceData = d;
 				p.V.fillWSList(d);
 				p.V.fillCurWS();
@@ -51,12 +50,12 @@ JF.M("home",(function(){
 			});
 		},
 		switchWorspace:function(id){
-			if (id == JF.base.curWorkspace.id) {
+			if (id == J.base.curWorkspace.id) {
 				return;
 			};
 			for (var i = p.M.workspaceData.cnt - 1; i >= 0; i--) {
 				if (id == p.M.workspaceData.items[i].id) {
-					JF.base.curWorkspace = p.M.workspaceData.items[i];
+					J.base.curWorkspace = p.M.workspaceData.items[i];
 					break;
 				};
 			};
@@ -64,7 +63,4 @@ JF.M("home",(function(){
 		}
 	};
 
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-	return pub;
-})(jQuery));
+});

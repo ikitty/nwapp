@@ -1,6 +1,5 @@
-JF.M("detail",(function(){
-	var p ={},pub={},
-	n_fs = require('fs');
+J(function($,p,pub){
+	var n_fs = require('fs');
 	
 	p.host = {
 		V:{
@@ -25,9 +24,9 @@ JF.M("detail",(function(){
 				this.readFile();
 			},
 			readFile : function(){
-				n_fs.readFile(JF.data.hostFile,function(err,data){
+				n_fs.readFile(J.data.hostFile,function(err,data){
 					if(err) {
-						JF.alert.show(err.toString(),{
+						J.alert.show(err.toString(),{
 							title:'Error on Loading Host File!'
 						});
 						return;
@@ -47,8 +46,7 @@ JF.M("detail",(function(){
 
 		}
 	};
-	
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-	return pub;
-})(jQuery));
+
+	pub.id="detail";
+
+});

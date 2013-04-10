@@ -1,5 +1,4 @@
-JF.M("editorWorkspace",(function($){
-	var p ={},pub={};
+J(function($,p,pub){
 	
 	p= {
 		V:{
@@ -17,25 +16,25 @@ JF.M("editorWorkspace",(function($){
 				});
 
 				//监听事件
-				var tName = JF.dataWorkspace.tName;
+				var tName = J.dataWorkspace.tName;
 				$(window).on(tName+'OnInserted',function(e,d){
 					location.reload();
 				}).on(tName+'OnInsertedError',function(e,d){
-					JF.alert.show('WebSQL增加记录时发生错误！');
-					JF.base.hideTip();
+					J.alert.show('WebSQL增加记录时发生错误！');
+					J.base.hideTip();
 					console.log(d);
 				}).on(tName+'OnUpdated',function(e,d){
 					location.reload();
 				}).on(tName+'OnUpdatedError',function(e,d){
-					JF.alert.show('WebSQL更新时发生错误！');
-					JF.base.hideTip();
+					J.alert.show('WebSQL更新时发生错误！');
+					J.base.hideTip();
 					console.log(d);
 				}).on(tName+'OnDeletedById',function(e,d){
 					$("#wsitem"+d).remove();
 					pub.hide();
 				}).on(tName+'OnDeletedByIdError',function(e,err){
-					JF.alert.show('WebSQL删除记录时发生错误！');
-					JF.base.hideTip();
+					J.alert.show('WebSQL删除记录时发生错误！');
+					J.base.hideTip();
 					console.log(d);
 				});
 
@@ -107,7 +106,7 @@ JF.M("editorWorkspace",(function($){
 				});
 
 				$("#btnNew").on("click",function(e){
-					JF.editorWorkspace.show("",{isNew:true});
+					J.editorWorkspace.show("",{isNew:true});
 				});
 
 				$("#btnDelete").on('click',function(e){
@@ -119,7 +118,7 @@ JF.M("editorWorkspace",(function($){
 				if (!p.M.item) {
 					return;
 				};
-				JF.dataWorkspace.deleteById(p.M.item.id);
+				J.dataWorkspace.deleteById(p.M.item.id);
 			},
 			save:function(){
 				//get data 
@@ -131,19 +130,19 @@ JF.M("editorWorkspace",(function($){
 					return;
 				};
 
-				JF.base.showTip('Saving Workspace'+data.name);
+				J.base.showTip('Saving Workspace'+data.name);
 
 				if (p.M.isNew) {
 
-					JF.dataWorkspace.findByRootPath(data.rootPath,function(results){
+					J.dataWorkspace.findByRootPath(data.rootPath,function(results){
 
 						if(results.rows.length!==0){
 							//工作空间已经存在
-							JF.alert.show('工作空间已经存在：'+data.rootPath);
+							J.alert.show('工作空间已经存在：'+data.rootPath);
 							return;
 						}
 						//新增记录
-						JF.dataWorkspace.insert(data);
+						J.dataWorkspace.insert(data);
 
 					});
 
@@ -151,25 +150,25 @@ JF.M("editorWorkspace",(function($){
 				};
 
 				//更新现有的工作空间
-				JF.dataWorkspace.update(data);
+				J.dataWorkspace.update(data);
 
 			},
 			validate:function(data){
 				//validate data.name
 				var isNameValid = p.M.regexCName.test(data.name);
 				if (!isNameValid) {
-					JF.alert.show('工作空间名称必须由"字母,数字,中文,下划线和中划线组成!',{title:'Invalid Field Entry!'});
+					J.alert.show('工作空间名称必须由"字母,数字,中文,下划线和中划线组成!',{title:'Invalid Field Entry!'});
 					p.V.validateError('name');
 					return false;
 				};
 
 				//validate data.rootPath
 				if (data.rootPath.length==0) {
-					JF.alert.show('请选择工作空间对应的本地目录！');
+					J.alert.show('请选择工作空间对应的本地目录！');
 					p.V.validateError('rootPath');
 					return false;
 				};
-				if (!JF.endsWidth(data.rootPath,'\\')) {
+				if (!J.endsWidth(data.rootPath,'\\')) {
 					data.rootPath+='\\';
 				};
 
@@ -179,12 +178,12 @@ JF.M("editorWorkspace",(function($){
 				//validate data.remotePath:字母数字和斜杠
 				if (data.remotePath.length!=0) {
 					if(!p.M.regexPartialUrl.test(data.remotePath)){
-						JF.alert.show('远程路径无效，请参考"static/icson/"输入！');
+						J.alert.show('远程路径无效，请参考"static/icson/"输入！');
 						p.V.validateError('remotePath');
 						return false;
 					}
 					//补全末尾的斜杠
-					if (!JF.endsWidth(data.remotePath,'/')) {
+					if (!J.endsWidth(data.remotePath,'/')) {
 						data.remotePath+='/';
 					};
 					if(data.remotePath[0]=="/"){ //删除开头的斜杠
@@ -194,14 +193,14 @@ JF.M("editorWorkspace",(function($){
 
 				//validate data.ftpId
 				if (!p.M.regexIpV4.test(data.ftpId)) {
-					JF.alert.show('ftp id无效！');
+					J.alert.show('ftp id无效！');
 					p.V.validateError('ftpId');
 					return false;
 				};
 
 				//validate data.ftpPort
 				if (!p.M.regexInt.test(data.ftpPort)) {
-					JF.alert.show('ftp端口无效！');
+					J.alert.show('ftp端口无效！');
 					p.V.validateError('ftpPort');
 					return false;
 				};
@@ -236,11 +235,11 @@ JF.M("editorWorkspace",(function($){
 			},//show
 			showEdit:function(id){
 
-				JF.dataWorkspace.findById(id,function(results){
+				J.dataWorkspace.findById(id,function(results){
 
 					if(results.rows.length==0){
 						//工作空间不存在
-						JF.alert.show('工作空间不存在：'+id);
+						J.alert.show('工作空间不存在：'+id);
 						return;
 					}
 					
@@ -277,7 +276,5 @@ JF.M("editorWorkspace",(function($){
 		p.C.close();
 	};
 
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-	return pub;
-})(jQuery));
+	pub.id="editorWorkspace";
+});
