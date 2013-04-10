@@ -1,8 +1,8 @@
 J(function($,p,pub){
+	pub.id="dataProject";
+	
 	var fs = require('fs-extra'),
 		path = require('path');
-
-	pub.tName = 'Project';
 
 	/**
 	 * 获取所有的项目。COC规则：寻找css文件夹，取其父文件夹作为项目文件夹
@@ -15,6 +15,4 @@ J(function($,p,pub){
 			};
 		});
 	};
-	pub.id="dataProject";
-	
 });

@@ -1,4 +1,5 @@
 J(function($,p,pub){
+	pub.id="about";
 	var gui = require('nw.gui');
 	
 	p.C= {
@@ -16,5 +17,5 @@ J(function($,p,pub){
 			});
 		}
 	};
-	pub.id="about";
+	
 });

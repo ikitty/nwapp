@@ -20,8 +20,13 @@ J(function($,p,pub){
 
 	p.C = {
 		init:function(){
-			$(window).on(J.dataWorkspace.tName+'OnGetAll',function(e,d){
+
+			$(window).on(J.dataWorkspace.id+'OnGetAll',function(e,d){
 				p.V.fillData(d);
+				J.base.updateStatus("Total workspace:"+d.cnt);
+			}).on(J.dataWorkspace.id+'OnDataInited',function(e){
+				//get workspace data
+				J.dataWorkspace.getAll();
 			});
 		},
 		onLoad:function(){

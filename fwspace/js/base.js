@@ -1,5 +1,11 @@
 //TODO:make it cool http://html5demos.com/history
 J(function($,p,pub){
+	pub.id ="base";
+	pub.userName = process.env['USERNAME'];
+	pub.appRoot = process.execPath.substr(0,process.execPath.lastIndexOf('\\')+1);
+	pub.dataRoot = pub.appRoot+"data\\fwspace\\";
+	pub.initFile = pub.dataRoot+"app.ini";
+
 	var gui = require('nw.gui'),
 		fs = require('fs');
 	
@@ -10,7 +16,7 @@ J(function($,p,pub){
 		$navCollapse:$("#navCollapse"),
 		$secA:$("#secA"),
 		updateStatus:function(txt){
-			txt = txt??this.tpl0+','+pub.userName;
+			txt = txt||this.tpl0+','+pub.userName;
 			this.$status.html(txt);
 		}
 	};
@@ -21,11 +27,6 @@ J(function($,p,pub){
 	};
 
 	p.C={
-		init:function(){
-			J.base.appRoot = process.execPath.substr(0,process.execPath.lastIndexOf('\\')+1);
-			J.base.dataRoot = J.base.appRoot+"data\\fwspace\\";
-			J.base.initFile = J.base.dataRoot+"app.ini";
-		},
 		onLoad:function(){
 
 			$("#btnClose").on("click",function(e){
@@ -123,8 +124,4 @@ J(function($,p,pub){
 		p.V.updateStatus(txt);
 	};
 
-	pub.userName = process.env['USERNAME'];
-
-	pub.id ="base";
-	
 });

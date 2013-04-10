@@ -23,7 +23,7 @@ J(function($,p,pub){
 				};
 			});
 
-
+			J.base.updateStatus();
 
 		},
 		render:function(data){
@@ -57,15 +57,15 @@ J(function($,p,pub){
 	p.C = {
 		init:function(){
 			//监听事件
-			var tName = J.dataSetting.tName;
-			$(window).on(tName+'OnLoaded',function(e,d){
+			var id = J.dataSetting.id;
+			$(window).on(id+'OnLoaded',function(e,d){
 				p.V.render(J.dataSetting.data);
-			}).on(tName+"OnSavedError",function(e,d){
+			}).on(id+"OnSavedError",function(e,d){
 				J.alert.show(d.toString(),{
 					title:'Error when writing setting data!'
 				});
 				J.base.hideTip();
-			}).on(tName+"OnSaved",function(e,d){
+			}).on(id+"OnSaved",function(e,d){
 				J.base.hideTip();
 				J.alert.show('Successfully Saved!',{duration:1500});
 			});

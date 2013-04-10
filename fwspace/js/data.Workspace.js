@@ -1,6 +1,6 @@
 J(function($,p,pub){
-
-	pub.tName = 'Workspace';
+	pub.id="dataWorkspace";
+	p.tName = 'Workspace';
     // add autoincrement by Enix
 	// CREATE TABLE if not exists test (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name)
 	pub.fields = [
@@ -21,8 +21,8 @@ J(function($,p,pub){
 		createTable:'',
 		getAll:'',
 		init:function(){
-			this.createTable = J.data.getTableSQL(pub.tName,pub.fields);
-			this.getAll = J.data.getSelectSQL(pub.tName);
+			this.createTable = J.data.getTableSQL(p.tName,pub.fields);
+			this.getAll = J.data.getSelectSQL(p.tName);
 		}
 	};
 	p.M = {
@@ -45,21 +45,33 @@ J(function($,p,pub){
 		initTable:function(){
 
 			J.db.transaction(function(tx){
+				//init table structure
 				tx.executeSql(p.sql.createTable,[],function(tx1){
 
-					var sql = J.data.getInsertSQL(pub.tName,p.M.item0),
+					var sql = J.data.getInsertSQL(p.tName,p.M.item0),
 						data = J.data.objectToArray(p.M.item0);
-
-					tx.executeSql(sql,data);
+					//init dummy data
+					tx1.executeSql(sql,data,function(tx2){
+						//everything goes well
+						$(window).trigger(pub.id+'OnDataInited');
+					},function(tx2,err){
+						console.log(err);
+						alert('WebSQL Error When initializing dummy data for Workspace!');
+					});
 				});
 				
 			});
 		},
-		onLoad:function(){
+		init:function(){
 			//init table when the ini file is a new one
-			$(window).on(J.dataSetting.tName+'OnLoaded',function(e,d){\
-				if (d.isNew) {
-					p.C.initTable();
+			$(window).on(J.dataSetting.id+'OnLoaded',function(e,d){
+				if (d.isOk) {
+					if (d.isNew) {
+						p.C.initTable();
+					}else{
+						//data had beened initialized
+						$(window).trigger(pub.id+'OnDataInited');
+					};
 				};
 			});
 		}
@@ -72,15 +84,18 @@ J(function($,p,pub){
 
 		J.db.transaction(function(tx){
 
+			//删除id，因为id是自增长的！
+			delete item.id;
+
 			item.userName = process.env['USERNAME'];
 			item.createdAt = item.modifiedAt = new Date().toString('yyyy-MM-dd HH:mm:ss');
 
-			var sql = J.data.getInsertSQL(pub.tName,item);
+			var sql = J.data.getInsertSQL(p.tName,item);
 
 			tx.executeSql(sql,J.data.objectToArray(item),function(tx){
-				$(window).trigger(pub.tName+'OnInserted',[item]);
+				$(window).trigger(pub.id+'OnInserted',[item]);
 			},function(tx,err){
-				$(window).trigger(pub.tName+'OnInsertedError',[err]);
+				$(window).trigger(pub.id+'OnInsertedError',[err]);
 			});
 			
 
@@ -93,11 +108,11 @@ J(function($,p,pub){
 	pub.findByRootPath = function(rootPath,cbk){
 		J.db.transaction(function(tx){
 
-			var sql = J.data.getSelectSQL(pub.tName,'rootPath = ?');
+			var sql = J.data.getSelectSQL(p.tName,'rootPath = ?');
 
 			tx.executeSql(sql,[rootPath],function(tx,results){
 
-				$(window).trigger(pub.tName+'OnFindByRootPath',[results]);
+				$(window).trigger(pub.id+'OnFindByRootPath',[results]);
 
 				cbk && cbk(results);
 
@@ -112,11 +127,11 @@ J(function($,p,pub){
 	pub.findById = function(id,cbk){
 		J.db.transaction(function(tx){
 
-			var sql = J.data.getSelectSQL(pub.tName,'id = ?');
+			var sql = J.data.getSelectSQL(p.tName,'id = ?');
 
 			tx.executeSql(sql,[id],function(tx,results){
 
-				$(window).trigger(pub.tName+'OnFindById',[results]);
+				$(window).trigger(pub.id+'OnFindById',[results]);
 
 				cbk && cbk(results);
 
@@ -130,14 +145,14 @@ J(function($,p,pub){
 	pub.deleteById = function(id){
 		J.db.transaction(function(tx){
 
-			var sql = J.data.getDeleteSQL(pub.tName,{'id':id});
+			var sql = J.data.getDeleteSQL(p.tName,{'id':id});
 
 			tx.executeSql(sql,[id],function(tx){
 
-				$(window).trigger(pub.tName+'OnDeletedById',[id]);
+				$(window).trigger(pub.id+'OnDeletedById',[id]);
 
 			},function(tx,err){
-				$(window).trigger(pub.tName+'OnDeletedByIdError',[id]);
+				$(window).trigger(pub.id+'OnDeletedByIdError',[id]);
 			});
 
 		});
@@ -153,14 +168,14 @@ J(function($,p,pub){
 			item.modifiedAt = new Date().toString('yyyy-MM-dd HH:mm:ss');
 
 			var item1 = J.data.objectToArray(item,['id']),
-				sql = J.data.getUpdateSQL(pub.tName,item,'id');
+				sql = J.data.getUpdateSQL(p.tName,item,'id');
 
 			item1.push(item.id);
 
 			tx.executeSql(sql,item1,function(tx){
-				$(window).trigger(pub.tName+'OnUpdated',[item]);
+				$(window).trigger(pub.id+'OnUpdated',[item]);
 			},function(tx,err){
-				$(window).trigger(pub.tName+'OnUpdatedError',[err]);
+				$(window).trigger(pub.id+'OnUpdatedError',[err]);
 			});
 
 		});
@@ -182,16 +197,12 @@ J(function($,p,pub){
 					};
 				};
 
-				$(window).trigger(pub.tName+'OnGetAll',[{'cnt':len,'items':items}]);
+				$(window).trigger(pub.id+'OnGetAll',[{'cnt':len,'items':items}]);
 
 			},function(tx,err){
-				$(window).trigger(pub.tName+'OnGetAllError',[err]);
+				$(window).trigger(pub.id+'OnGetAllError',[err]);
 			});
 
 		});
 	};
-
-	pub.id="dataWorkspace";
-
-	
 });

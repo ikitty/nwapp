@@ -1,6 +1,5 @@
 J(function($,p,pub){
 	pub.id ="home";
-	pub.tName = 'home';
 
 	p.M = {
 		workspaceData:null
@@ -37,10 +36,14 @@ J(function($,p,pub){
 
 	p.C = {
 		init:function(){
-			$(window).on(J.dataWorkspace.tName+'OnGetAll',function(e,d){
+			$(window).on(J.dataWorkspace.id+'OnGetAll',function(e,d){
 				p.M.workspaceData = d;
 				p.V.fillWSList(d);
 				p.V.fillCurWS();
+				J.base.updateStatus("Total workspace:"+d.cnt);
+			}).on(J.dataWorkspace.id+'OnDataInited',function(e){
+				//get workspace data
+				J.dataWorkspace.getAll();
 			});
 		},
 		onLoad:function(){

@@ -7,6 +7,8 @@
  */
 J(function($,p,pub){
 
+	pub.id="data";
+
 	p.C = {
 		init:function(){
 			J.db = openDatabase('fwspace','1.0','db for fwspace',4*1024*1024);
@@ -156,7 +158,4 @@ J(function($,p,pub){
 		};
 		return retVal;
 	};
-
-	pub.id="data";
-	
 });

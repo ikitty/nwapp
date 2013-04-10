@@ -2,6 +2,8 @@
  * application setting module
  */
 J(function($,p,pub){
+	pub.id="dataSetting";
+
 	var fs = require('fs-extra'),
 		path = require('path');
 
@@ -15,7 +17,6 @@ J(function($,p,pub){
 		}
 	};
 
-	pub.tName = "Setting";
 	pub.data = p.M.item0;
 
 	//controller
@@ -29,10 +30,14 @@ J(function($,p,pub){
 					fs.mkdirs(J.base.dataRoot,function(err){
 						if(err){
 							console.log(err);
+							$(window).trigger(pub.id+"OnLoaded",[{
+								isOk:false,
+								isNew:true
+							}]);
 							return;
 						};
 						fs.writeFile(J.base.initFile,JSON.stringify(pub.data),function(err){
-							$(window).trigger(pub.tName+"OnLoaded",[{
+							$(window).trigger(pub.id+"OnLoaded",[{
 								isOk:true,
 								isNew:true
 							}]);
@@ -51,7 +56,7 @@ J(function($,p,pub){
 					J.base.hideTip();
 
 					if(err) {
-						$(window).trigger(pub.tName+"OnLoaded",[{
+						$(window).trigger(pub.id+"OnLoaded",[{
 							'err':err
 						}])
 						return;
@@ -61,7 +66,7 @@ J(function($,p,pub){
 
 					J.dataSetting.data = data;
 
-					$(window).trigger(pub.tName+"OnLoaded",[{isOk:true}]);
+					$(window).trigger(pub.id+"OnLoaded",[{isOk:true}]);
 
 				});
 
@@ -80,16 +85,15 @@ J(function($,p,pub){
 		fs.writeFile(J.base.initFile,txt,function(err){
 			if (err) {
 
-				$(window).trigger(pub.tName+"OnSavedError",[err]);
+				$(window).trigger(pub.id+"OnSavedError",[err]);
 				return;
 			};
 
-			$(window).trigger(pub.tName+"OnSaved",[item]);
+			$(window).trigger(pub.id+"OnSaved",[item]);
 
 			J.dataSetting.data = item;
 
 		});
 	};
-	pub.id="dataSetting";
 	
 });
