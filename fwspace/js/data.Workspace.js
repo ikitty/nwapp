@@ -1,5 +1,5 @@
 JF.M("dataWorkspace",(function($){
-	var p ={},pub={};
+	var p ={},pub={}, fs = require('fs');
 	pub.tName = 'Workspace';
     // add autoincrement by Enix
 	// CREATE TABLE if not exists test (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name)
@@ -42,19 +42,26 @@ JF.M("dataWorkspace",(function($){
 	};
 	p.C = {
 		initTable:function(){
-
 			JF.db.transaction(function(tx){
-				tx.executeSql(p.sql.createTable,[],function(tx1){
+				tx.executeSql(p.sql.createTable,[],function(){
+                    // check why cannot i  get the data
 
-					var sql = JF.data.getInsertSQL(pub.tName,p.M.item0),
-						data = JF.data.objectToArray(p.M.item0);
+                    var whereSql = JF.data.getSelectSQL(pub.tName);
+					tx.executeSql(whereSql, [], function (tx, ret) {
+                        // 如果数据库中有记录就不插入默认数据
+                        if (ret.rows.length < 1) {
+                            var sql = JF.data.getInsertSQL(pub.tName,p.M.item0),
+                                data = JF.data.objectToArray(p.M.item0);
 
-					tx.executeSql(sql,data);
+                            tx.executeSql(sql,data);
+                        }
+					});
 				});
 				
 			});
 		},
-		onLoad:function(){
+        // modify onload to init by Enix , initTable should be first , then do getAll
+		init:function(){
 			this.initTable();
 		}
 	};
