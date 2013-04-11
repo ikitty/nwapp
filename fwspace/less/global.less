@@ -1,9 +1,10 @@
 @import "vars.less";
+@import "mixins.less";
 
 //Webfonts
 @font-face {
 	font-family: Iceland;
-	src:url(../fonts/Iceland/Iceland-Regular.ttf);
+	src:url(../font/Iceland/Iceland-Regular.ttf);
 }
 
 * {
@@ -113,7 +114,7 @@ button,.mod_nodrag,.navbar a {
 		left:0;
 		right:0;
 		top:55px;
-		bottom:0;
+		bottom:32px;
 		overflow:auto;
 	}
 
@@ -131,6 +132,26 @@ button,.mod_nodrag,.navbar a {
 		border-bottom:1px solid @panelBGColor;
 	}
 
+}
+.mod_flexbox{
+	.displayBox();
+	.size(100%,100%);
+	.fbox_sidebar{
+		position: relative;
+		.boxSizing(border-box);
+		.size(220px,100%);
+		overflow: hidden;
+	}
+	.fbox_bd{
+		.boxFlex(1);
+	}
+}
+
+.fm_wrap{
+	position:absolute;
+	.size(46px,46px);
+	left:0;
+	bottom:0;
 }
 
 /* 水平列表 */
@@ -151,6 +172,8 @@ footer{
 	right:0;
 	left:0;
 	color:#fff;
+	height:32px;
+	overflow: hidden;
 	.alert{
 		position:relative;
 		background-color: #000;

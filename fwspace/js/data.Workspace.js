@@ -17,6 +17,8 @@ J(function($,p,pub){
 		'modifiedAt'
 	];
 
+	var $win = $(window);
+
 	p.sql={
 		createTable:'',
 		getAll:'',
@@ -53,7 +55,7 @@ J(function($,p,pub){
 					//init dummy data
 					tx1.executeSql(sql,data,function(tx2){
 						//everything goes well
-						$(window).trigger(pub.id+'OnDataInited');
+						$win.trigger(pub.id+'OnDataInited');
 					},function(tx2,err){
 						console.log(err);
 						alert('WebSQL Error When initializing dummy data for Workspace!');
@@ -64,13 +66,13 @@ J(function($,p,pub){
 		},
 		init:function(){
 			//init table when the ini file is a new one
-			$(window).on(J.dataSetting.id+'OnLoaded',function(e,d){
+			$win.on(J.dataSetting.id+'OnLoaded',function(e,d){
 				if (d.isOk) {
 					if (d.isNew) {
 						p.C.initTable();
 					}else{
 						//data had beened initialized
-						$(window).trigger(pub.id+'OnDataInited');
+						$win.trigger(pub.id+'OnDataInited');
 					};
 				};
 			});
@@ -93,9 +95,9 @@ J(function($,p,pub){
 			var sql = J.data.getInsertSQL(p.tName,item);
 
 			tx.executeSql(sql,J.data.objectToArray(item),function(tx){
-				$(window).trigger(pub.id+'OnInserted',[item]);
+				$win.trigger(pub.id+'OnInserted',[item]);
 			},function(tx,err){
-				$(window).trigger(pub.id+'OnInsertedError',[err]);
+				$win.trigger(pub.id+'OnInsertedError',[err]);
 			});
 			
 
@@ -112,7 +114,7 @@ J(function($,p,pub){
 
 			tx.executeSql(sql,[rootPath],function(tx,results){
 
-				$(window).trigger(pub.id+'OnFindByRootPath',[results]);
+				$win.trigger(pub.id+'OnFindByRootPath',[results]);
 
 				cbk && cbk(results);
 
@@ -131,7 +133,7 @@ J(function($,p,pub){
 
 			tx.executeSql(sql,[id],function(tx,results){
 
-				$(window).trigger(pub.id+'OnFindById',[results]);
+				$win.trigger(pub.id+'OnFindById',[results]);
 
 				cbk && cbk(results);
 
@@ -149,10 +151,10 @@ J(function($,p,pub){
 
 			tx.executeSql(sql,[id],function(tx){
 
-				$(window).trigger(pub.id+'OnDeletedById',[id]);
+				$win.trigger(pub.id+'OnDeletedById',[id]);
 
 			},function(tx,err){
-				$(window).trigger(pub.id+'OnDeletedByIdError',[id]);
+				$win.trigger(pub.id+'OnDeletedByIdError',[id]);
 			});
 
 		});
@@ -173,9 +175,9 @@ J(function($,p,pub){
 			item1.push(item.id);
 
 			tx.executeSql(sql,item1,function(tx){
-				$(window).trigger(pub.id+'OnUpdated',[item]);
+				$win.trigger(pub.id+'OnUpdated',[item]);
 			},function(tx,err){
-				$(window).trigger(pub.id+'OnUpdatedError',[err]);
+				$win.trigger(pub.id+'OnUpdatedError',[err]);
 			});
 
 		});
@@ -197,10 +199,10 @@ J(function($,p,pub){
 					};
 				};
 
-				$(window).trigger(pub.id+'OnGetAll',[{'cnt':len,'items':items}]);
+				$win.trigger(pub.id+'OnGetAll',[{'cnt':len,'items':items}]);
 
 			},function(tx,err){
-				$(window).trigger(pub.id+'OnGetAllError',[err]);
+				$win.trigger(pub.id+'OnGetAllError',[err]);
 			});
 
 		});

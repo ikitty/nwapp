@@ -12,6 +12,8 @@ J(function($,p,pub){
 			'exeCss':'',
 			'exeImg':'',
 			'exeLess':'',
+			//当路径出现/searchFlag0/时，同时检索/searchFlagx/下的文件
+			'searchFlag':'img,html,css,less,psd,images',
 			'createdAt':new Date().toString('yyyy-MM-dd HH:mm:ss'),
 			'modifiedAt':new Date().toString('yyyy-MM-dd HH:mm:ss')
 		}

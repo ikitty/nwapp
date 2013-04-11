@@ -1,9 +1,26 @@
+@import "vars.less";
+@import "mixins.less";
+@import "jquery.fanmenu.less";
+
 .alert_noproject{display: none;}
 .project_none{
 	.alert_noproject{
 		display: block;
 	}
-	.tabs_project{
-		display: none;
+}
+.fm_wrap{
+	.size(145px,130px);
+	bottom:32px;
+	.fm_list{
+		bottom:35px;
+	}
+}
+
+.fbox_sidebar{
+	>.nav_project{
+		.boxSizing(border-box);
+		margin-right: 0;
+		margin-bottom:0;
+		.size(100%,100%);
 	}
 }

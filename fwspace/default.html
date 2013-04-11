@@ -56,33 +56,41 @@
 						<div class="panel_hdin">
 							<div class="pull-right cfg_acts">
 								<div class="btn-group">
-									<button class="btn"><i class="icon-cog"></i>Switch</button>
+									<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i>Workspace<span id="lblWorkspace"></span></button>
 									<button class="btn dropdown-toggle" data-toggle="dropdown">
 										<span class="caret"></span>
 									</button>
 									<ul id="wsList" class="dropdown-menu"></ul>
 								</div>
 							</div>
-							<h1>Workspace<span id="lblWorkspace"></span></h1>
+							<h1>Projects</h1>
 						</div>
 						<div class="panel_bg2"></div>
 					</div>
 					<div class="panel_bd">
-						<div class="project_main">
-							<div class="alert alert-error alert_noproject">
-								No Projects found in this Workspace!
+						<div id="projectMain" class="mod_flexbox project_main">
+							<div class="tabbable tabs-left fbox_sidebar">
+								<ul class="nav nav-tabs nav_project" id="projectNavList"></ul>
 							</div>
-							<div class="tabbable tabs-left tabs_project">
-								<ul class="nav nav-tabs" id="projectNavList"></ul>
-								<div class="tab-content" id="projectPanelList"></div>
+							<div class="fbox_bd">
+								<div class="tab-content" id="projectPanelList">
+									<div class="alert alert-error alert_noproject hide">No Projects found!</div>
+								</div>
 							</div>
-						</div>
+						</div><!--/project_main-->
 					</div>
 				</div>
 			</div><!--/row-->
 
 		</div><!--/.fluid-container-->
-
+		<div id="fanMenu" class="fm_wrap">
+			<a href="javascript://" class="fm_btntoggle" title="Toggle Menu"><span>Toggle Menu</span></a>
+			<ul id="fanMenuList" class="fm_list">
+				<li><a id="btnAddFolder" href="#" rel="1" title="Add Existence"><i class="icon-folder-open-alt"></i></a></li>
+				<li><a id="btnCreateFolder" href="#" rel="2" title="Create New Project"><i class="icon-file-alt"></i></a></li>
+			</ul>
+			<input id="ipt_projectFolder" type="file" class="field_projectFolder" nwdirectory="true" name="projectFolder" style="display:none" nwworkingdir=""/>
+		</div>
 		<div class="mod_status">
 			<div id="appStatus" class="alert"></div>
 			<div id="appTip" class="alert alert-tip" style="display:none;"></div>
@@ -111,6 +119,7 @@
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src="js/lib/jquery.min.js"></script>
+		<script src="js/lib/jquery.fanmenu.js"></script>
 		<script src="js/lib/bootstrap.min.js"></script>
 		<script src="js/lib/date.js"></script>
 		<script src="js/lib/j.core.js"></script>
