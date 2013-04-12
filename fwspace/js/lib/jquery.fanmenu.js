@@ -2,7 +2,7 @@
   A jquery plugin mimicking the fan-menu EX of the Path App.
   @name jquery.fanmenu.js
   @author levinhuang (lv)
-  @version 1.0
+  @version 1.0.1
   @date 04/11/2013
   @license Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
 */
@@ -20,8 +20,8 @@
 			var me = this;
 			
 			this.$toggle
-				.off(this.opts.methodName+'.fanmenu')
-				.on(this.opts.methodName+'.fanmenu',function(e){
+				.off(this.opts.eventName+'.fanmenu')
+				.on(this.opts.eventName+'.fanmenu',function(e){
 			
 					if(me.$d.hasClass(me.opts.clActive)){
 						me.toggleFan(0);
@@ -33,8 +33,22 @@
 				});
 
 			if (this.opts.hideOnClick) {
-				this.$items.off('click.fanmenu')
+				$(document).off('click.fanmenu')
 					.on('click.fanmenu',function(e){
+						var $target = $(e.target);
+
+						if ($target.is(me.$d)) {
+							return;
+						};
+
+						if ( $target.hasClass(me.opts.hideOnClickExcept) || $target.parents('.'+me.opts.hideOnClickExcept).length>0 ) {
+							return;
+						};
+
+						var	$tempWrap = $target.parents('.'+me.opts.clActive);
+						if ($tempWrap.length>0) {
+							return;
+						};
 
 						me.close();
 
@@ -150,11 +164,12 @@
 	};
 
 	$.fn.fanmenu.defaults = {
-		methodName:'click',
-		hideOnClick:false,
-		initAngle: 0,
-		angleDisplay: 90,
-		radius:200,
+		eventName:'click',				//the event that trigger the menu to show
+		hideOnClick:false,				//hide the menu when clicking the other places on the document
+		hideOnClickExcept:'fm_antihide',//donot hide the menu when clicking on these elements with className 'fm_antihide'
+		initAngle: 0,					//initial angle for the fan
+		angleDisplay: 90,				//display angle of the fan
+		radius:200,						//the radius of the fan
 		clActive:'fm_active',
 		clDeactive:'fm_off',
 		clToggleEffect:'fm_rotate',
