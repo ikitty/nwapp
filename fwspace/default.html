@@ -54,7 +54,10 @@
 				<div class="mod_panel">
 					<div class="panel_hd">
 						<div class="panel_hdin">
+                            <!--S 右侧操作 -->
 							<div class="pull-right cfg_acts">
+								<button id="btnCreateDir" class="btn" title="create a new project in current workspace">Create Project</button>
+								<button id="btnAddDir" class="btn" title="add a project from your work directory">Add Project</button>
 								<div class="btn-group">
 									<button class="btn"><i class="icon-cog"></i>Switch</button>
 									<button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -63,6 +66,7 @@
 									<ul id="wsList" class="dropdown-menu"></ul>
 								</div>
 							</div>
+                            <!--E 右侧操作 -->
 							<h1>Workspace<span id="lblWorkspace"></span></h1>
 						</div>
 						<div class="panel_bg2"></div>
@@ -73,8 +77,34 @@
 								No Projects found in this Workspace!
 							</div>
 							<div class="tabbable tabs-left tabs_project">
-								<ul class="nav nav-tabs" id="projectNavList"></ul>
-								<div class="tab-content" id="projectPanelList"></div>
+                                <!--S 项目列表 -->
+                                <ul class="nav nav-tabs" id="projectNavList-debug">
+                                    <li>Icson-Common</li>
+                                    <li>Icson-Home</li>
+                                    <li>Icson-Search</li>
+                                </ul>
+                                <!--E 项目列表 -->
+
+                                <!--S 项目中各类文件列表 -->
+                                <div class="tab-content" id="projectPanelList">
+                                    <ul class="nav" id="projectHtml">
+                                        <li>login.html</li>
+                                        <li>home.html</li>
+                                    </ul>
+                                    <ul class="nav" id="projectCss">
+                                        <li>login.css</li>
+                                        <li>home.css</li>
+                                    </ul>
+                                    <ul class="nav" id="projectImg">
+                                        <li>login.css</li>
+                                        <li>home.css</li>
+                                    </ul>
+                                    <ul class="nav" id="projectPsd">
+                                        <li>login.css</li>
+                                        <li>home.css</li>
+                                    </ul>
+                                </div>
+                                <!--E 项目中各类文件列表 -->
 							</div>
 						</div>
 					</div>
@@ -103,8 +133,52 @@
 		</div>
 		<!--/Alert-->
 
-		<!--Templates-->
+        <!--S 项目编辑界面: add/new -->
+		<div id="projectEditor" class="modal modal-fixed fade mod_editor hide" tabindex="-1" role="dialog" aria-labelledby="editorTitle" aria-hidden="true">
+			<div class="modal-header">
+				<div class="modal-headerin">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h3 id="editorTitle">Edit Project</h3>
+				</div>
+			</div>
+			<div class="modal-body">
+				<div id="editorBody" class="modal-bodyin">
+					<div class="form-horizontal form_1">
+                        <input type="hidden" class="input-block-level field_item field_id" name="id" />
 
+                        <!--S 选择工作空间 -->
+						<div id="cg_workspace" class="control-group">
+							<label class="control-label">Workspace</label>
+							<div class="controls">
+                                <select class="field_item" name="rootPath" id="wsOption">
+                                    <option selected="selected">选择工作空间</option>
+                                </select>
+							</div>
+						</div>
+                        <!--E 选择工作空间 -->
+						<div id="cg_name" class="control-group">
+							<label class="control-label" for="ipt_name">Name</label>
+							<div class="controls">
+								<input type="text" id="ipt_name" class="field_item field_name" name="name" placeholder="项目名称,支持字母，数字，中文"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="modal-footerin">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+					<button id="btnDelete" style="display:none" class="btn">Delete</button>
+					<button id="btnSave" class="btn btn-primary">Save</button>
+				</div>
+			</div>
+		</div>
+        <!--E 项目编辑界面 -->
+
+		<!--Templates-->
+		<script type="text/x-jquery-tpl" id="tplProjectItem">
+            <li data-fullPath="%projectFullPath%">%projectName%</li>
+		</script>
 		<!--/Templates-->
 
 		<!-- Le javascript
@@ -120,6 +194,7 @@
 		<script src="js/data.Setting.js"></script>
 		<script src="js/data.Workspace.js"></script>
 		<script src="js/data.Project.js"></script>
+		<script src="js/editor.project.js"></script>
 		<script src="js/default.js"></script>
 		<script type="text/javascript">
 			JF.Init({});

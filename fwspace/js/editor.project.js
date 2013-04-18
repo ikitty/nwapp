@@ -1,9 +1,10 @@
-JF.M("editorWorkspace",(function($){
-	var p ={},pub={};
+JF.M("editorProject",(function($){
+	var p ={},pub={},
+        fs= require('fs');
 	
 	p= {
 		V:{
-			$main:$("#workspaceEditor"),
+			$main:$("#projectEditor"),
 			$title:$("#editorTitle"),
 			$controlGroups:null,
 			onLoad:function(){
@@ -87,8 +88,8 @@ JF.M("editorWorkspace",(function($){
 			regexCName:/^[a-zA-Z0-9_\u4e00-\u9fa5-\-]+$/,
 			regexPartialUrl:/^[a-zA-Z0-9\/]+$/,
 			regexIpV4:/^(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))$/,
-			defaultTitle:'Add Workspace',
-			editTitle:'Edit Workspace-',
+			defaultTitle:'Add Project',
+			editTitle:'Edit Project-',
 			duration:0,
 			timer:null
 		},
@@ -102,12 +103,12 @@ JF.M("editorWorkspace",(function($){
 					p.C.reset();
 				});
 
+                $("#btnCreateDir").on("click",function(e){
+                    p.C.show('', {isNew:true});
+                });
+
 				$("#btnSave").on('click',function(e){
 					p.C.save();
-				});
-
-				$("#btnNew").on("click",function(e){
-					JF.editorWorkspace.show("",{isNew:true});
 				});
 
 				$("#btnDelete").on('click',function(e){
@@ -131,31 +132,30 @@ JF.M("editorWorkspace",(function($){
 					return;
 				};
 
-				JF.base.showTip('Saving Workspace'+data.name);
+				JF.base.showTip('Saving Project '+data.name);
 
+                var fullPath = data.rootPath + data.name + '\\'; 
+
+                //判断project是否存在
 				if (p.M.isNew) {
-                    // 删除id字段 by Enix
-                    data.id = null; 
-                    delete data.id ;
 
-					JF.dataWorkspace.findByRootPath(data.rootPath,function(results){
+                    fs.exists(fullPath, function (ret) {
+                        if (ret) {
+                            JF.alert.show('Project已经存在：'+ fullPath);
+                            return;
+                        }
+                        // TODO
+                        // 记录数据 lv的数据接口
+                    });
+                    console.log('toBeContinue saved data') ;
 
-						if(results.rows.length!==0){
-							//工作空间已经存在
-							JF.alert.show('工作空间已经存在：'+data.rootPath);
-							return;
-						}
-						//新增记录
-						JF.dataWorkspace.insert(data);
-
-					});
-
-					return;
 				};
 
-				//更新现有的工作空间
-				JF.dataWorkspace.update(data);
+				//TODO 
+                //update data
 
+                //create dirs
+                var dirs = JF.data.createDirs({'rootPath': data.rootPath, 'name': data.name});
 			},
 			validate:function(data){
 				//validate data.name
@@ -176,48 +176,6 @@ JF.M("editorWorkspace",(function($){
 					data.rootPath+='\\';
 				};
 
-                // remove by enix
-				// data.id = data.rootPath.replace(/\\/gi,'-').replace(':','').toLowerCase();
-
-				//validate data.remotePath:字母数字和斜杠
-				if (data.remotePath.length!=0) {
-					if(!p.M.regexPartialUrl.test(data.remotePath)){
-						JF.alert.show('远程路径无效，请参考"static/icson/"输入！');
-						p.V.validateError('remotePath');
-						return false;
-					}
-					//补全末尾的斜杠
-					if (!JF.endsWidth(data.remotePath,'/')) {
-						data.remotePath+='/';
-					};
-					if(data.remotePath[0]=="/"){ //删除开头的斜杠
-						data.remotePath = data.remotePath.substr(1);
-					};
-				};
-
-				//validate data.ftpId
-				if (!p.M.regexIpV4.test(data.ftpId)) {
-					JF.alert.show('ftp id无效！');
-					p.V.validateError('ftpId');
-					return false;
-				};
-
-				//validate data.ftpPort
-				if (!p.M.regexInt.test(data.ftpPort)) {
-					JF.alert.show('ftp端口无效！');
-					p.V.validateError('ftpPort');
-					return false;
-				};
-
-				//validate data.ftpUser & data.ftpPwd
-				if (data.ftpUser.length==0) {
-					p.V.validateError('ftpUser');
-					return false;
-				};
-				if (data.ftpPwd.length == 0) {
-					p.V.validateError('ftpPwd');
-					return false;
-				};
 				return true;
 			},
 			show:function(item,opts){

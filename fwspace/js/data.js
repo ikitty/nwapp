@@ -6,7 +6,8 @@
  * UserDataDir:var userDataDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
  */
 JF.M("data",(function($){
-	var p ={},pub={};
+	var p ={},pub={}
+        fs=require('fs');
 
 	p.C = {
 		init:function(){
@@ -157,6 +158,20 @@ JF.M("data",(function($){
 		};
 		return retVal;
 	};
+
+    /**
+     * 根据单个路径生成各类文件的路径
+     *
+     * @param {Object} path 路径对象，可以根据需要将零散的子路径传进来
+     **/
+    pub.createDirs = function (path) {
+        var types = ['html', 'css', 'img', 'psd'] ;
+        for (var i = 0, k = null; k = types[i] ; i++ ) {
+            fs.mkdir(path.rootPath + k + '\\' + path.name, 0777, function () {
+                console.log('mkdir ok') ;
+            }) ;
+        }
+    };
 
 	
 	pub.onLoad = function(){JF.LoadSub(p);};
