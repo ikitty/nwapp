@@ -1,6 +1,13 @@
+.hide-text {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
 @font-face {
   font-family: Iceland;
-  src: url(../fonts/Iceland/Iceland-Regular.ttf);
+  src: url(../font/Iceland/Iceland-Regular.ttf);
 }
 * {
   font-family: 'Iceland', 'sans-serif', '\5FAE\8F6F\96C5\9ED1';
@@ -109,7 +116,7 @@ button,
   left: 0;
   right: 0;
   top: 55px;
-  bottom: 0;
+  bottom: 32px;
   overflow: auto;
 }
 .mod_panel .panel_bg1,
@@ -125,6 +132,48 @@ button,
   margin-top: 5px;
   border-top: 2px solid #666666;
   border-bottom: 1px solid #666666;
+}
+.mod_flexbox {
+  display: -moz-box;
+  /* Firefox */
+
+  display: -webkit-box;
+  /* Safari and Chrome */
+
+  display: box;
+  width: 100%;
+  height: 100%;
+}
+.mod_flexbox .fbox_sidebar {
+  position: relative;
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
+
+  width: 220px;
+  height: 100%;
+  overflow: hidden;
+}
+.mod_flexbox .fbox_bd {
+  -moz-box-flex: 1;
+  /* Firefox */
+
+  -webkit-box-flex: 1;
+  /* Safari and Chrome */
+
+  box-flex: 1;
+}
+.fm_wrap {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  left: 0;
+  bottom: 0;
 }
 /* 水平列表 */
 .mod_hlist,
@@ -154,6 +203,8 @@ footer {
   right: 0;
   left: 0;
   color: #fff;
+  height: 32px;
+  overflow: hidden;
 }
 .mod_status .alert {
   position: relative;

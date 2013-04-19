@@ -5,14 +5,13 @@
  * You can open the db file using software like sqlite expert
  * UserDataDir:var userDataDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
  */
-JF.M("data",(function($){
-	var p ={},pub={}
-        fs=require('fs');
+J(function($,p,pub){
+	var p ={},pub={};
 
 	p.C = {
 		init:function(){
-			JF.db = openDatabase('fwspace','1.0','db for fwspace',4*1024*1024);
-			JF.dbLocal = localStorage;
+			J.db = openDatabase('fwspace','1.0','db for fwspace',4*1024*1024);
+			J.dbLocal = localStorage;
 		}
 	};
 
@@ -22,7 +21,7 @@ JF.M("data",(function($){
 	 * @param {Array} wsList 工作空间json数组
 	 */
 	pub.getCurrentWorkspace = function(wsList){
-		var item= JF.dbLocal['CurrentWorkspace'];
+		var item= J.dbLocal['CurrentWorkspace'];
 		if (item) {
 			item = JSON.parse(item);
 		};
@@ -53,7 +52,7 @@ JF.M("data",(function($){
 	 * @param {Object} item 工作空间json对象
 	 */
 	pub.setCurrentWorkspace = function(item){
-		JF.dbLocal['CurrentWorkspace'] = JSON.stringify(item);
+		J.dbLocal['CurrentWorkspace'] = JSON.stringify(item);
 	};
 
 	/**
@@ -158,7 +157,7 @@ JF.M("data",(function($){
 		};
 		return retVal;
 	};
-
+});
     /**
      * 根据单个路径生成各类文件的路径
      *
@@ -173,9 +172,3 @@ JF.M("data",(function($){
         }
     };
 
-	
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-
-	return pub;
-})(jQuery));

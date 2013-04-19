@@ -1,21 +1,23 @@
 //TODO:make it cool http://html5demos.com/history
-JF.M("base",(function(){
-	var p ={},pub={},
-		gui = require('nw.gui'),
+J(function($,p,pub){
+	pub.id ="base";
+	pub.userName = process.env['USERNAME'];
+	pub.appRoot = process.execPath.substr(0,process.execPath.lastIndexOf('\\')+1);
+	pub.dataRoot = pub.appRoot+"data\\fwspace\\";
+	pub.initFile = pub.dataRoot+"app.ini";
+
+	var gui = require('nw.gui'),
 		fs = require('fs');
 	
 	p.V = {
-		tpl0:'No Workspace!',
+		tpl0:'Welcome',
 		$status:$("#appStatus"),
 		$tip:$("#appTip"),
 		$navCollapse:$("#navCollapse"),
 		$secA:$("#secA"),
-		updateStatus:function(d){
-			if (!d.cnt) {
-				this.$status.html(this.tpl0);
-				return;
-			};
-			this.$status.html('Total workspaces: '+d.cnt);
+		updateStatus:function(txt){
+			txt = txt||this.tpl0+','+pub.userName;
+			this.$status.html(txt);
 		}
 	};
 
@@ -25,24 +27,6 @@ JF.M("base",(function(){
 	};
 
 	p.C={
-		init:function(){
-			JF.base.appRoot = process.execPath.substr(0,process.execPath.lastIndexOf('\\')+1);
-			JF.base.dataRoot = JF.base.appRoot+"data\\fwspace\\";
-			JF.base.initFile = JF.base.dataRoot+"app.ini";
-
-			//获取工作空间
-			if(!JF.opts.ignoreWorkspaceData){
-				$(window).on(JF.dataWorkspace.tName+'OnGetAll',function(e,d){
-
-					pub.curWorkspace = JF.data.getCurrentWorkspace(d.items);
-
-					p.V.updateStatus(d);
-
-				});
-			}
-			
-
-		},
 		onLoad:function(){
 
 			$("#btnClose").on("click",function(e){
@@ -78,10 +62,6 @@ JF.M("base",(function(){
 
 			//minimize to tray
 			this.initTray();
-
-			if (!JF.opts.ignoreWorkspaceData) {
-				JF.dataWorkspace.getAll();
-			};
 
 		},
 		initTray:function(){
@@ -136,8 +116,12 @@ JF.M("base",(function(){
 	pub.isBusy = function(){
 		return p.M.isBusy;
 	};
+	/**
+	 * update status bar
+	 * @param {String} txt text info
+	 */
+	pub.updateStatus = function(txt){
+		p.V.updateStatus(txt);
+	};
 
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-	return pub;
-})(jQuery));
+});

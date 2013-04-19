@@ -1,12 +1,12 @@
-JF.M("about",(function(){
-	var p ={},pub={},
-		gui = require('nw.gui');
+J(function($,p,pub){
+	pub.id="about";
+	var gui = require('nw.gui');
 	
 	p.C= {
 		onLoad:function(){
 
-			JF.base.showTip('FWS V'+JF.data.version);
-			$("#txtVersion").html(JF.data.version);
+			J.base.showTip('FWS V'+J.data.version);
+			$("#txtVersion").html(J.data.version);
 
 			$("#aboutBody").on("click","a",function(e){
 
@@ -18,7 +18,4 @@ JF.M("about",(function(){
 		}
 	};
 	
-	pub.onLoad = function(){JF.LoadSub(p);};
-	pub.init = function(){JF.InitSub(p);};
-	return pub;
-})(jQuery));
+});

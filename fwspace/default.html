@@ -59,7 +59,7 @@
 								<button id="btnCreateDir" class="btn" title="create a new project in current workspace">Create Project</button>
 								<button id="btnAddDir" class="btn" title="add a project from your work directory">Add Project</button>
 								<div class="btn-group">
-									<button class="btn"><i class="icon-cog"></i>Switch</button>
+									<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i>Workspace<span id="lblWorkspace"></span></button>
 									<button class="btn dropdown-toggle" data-toggle="dropdown">
 										<span class="caret"></span>
 									</button>
@@ -67,52 +67,34 @@
 								</div>
 							</div>
                             <!--E 右侧操作 -->
-							<h1>Workspace<span id="lblWorkspace"></span></h1>
+							<h1>Projects</h1>
 						</div>
 						<div class="panel_bg2"></div>
 					</div>
 					<div class="panel_bd">
-						<div class="project_main">
-							<div class="alert alert-error alert_noproject">
-								No Projects found in this Workspace!
+						<div id="projectMain" class="mod_flexbox project_main">
+							<div class="tabbable tabs-left fbox_sidebar">
+								<ul class="nav nav-tabs nav_project" id="projectNavList"></ul>
 							</div>
-							<div class="tabbable tabs-left tabs_project">
-                                <!--S 项目列表 -->
-                                <ul class="nav nav-tabs" id="projectNavList-debug">
-                                    <li>Icson-Common</li>
-                                    <li>Icson-Home</li>
-                                    <li>Icson-Search</li>
-                                </ul>
-                                <!--E 项目列表 -->
-
-                                <!--S 项目中各类文件列表 -->
-                                <div class="tab-content" id="projectPanelList">
-                                    <ul class="nav" id="projectHtml">
-                                        <li>login.html</li>
-                                        <li>home.html</li>
-                                    </ul>
-                                    <ul class="nav" id="projectCss">
-                                        <li>login.css</li>
-                                        <li>home.css</li>
-                                    </ul>
-                                    <ul class="nav" id="projectImg">
-                                        <li>login.css</li>
-                                        <li>home.css</li>
-                                    </ul>
-                                    <ul class="nav" id="projectPsd">
-                                        <li>login.css</li>
-                                        <li>home.css</li>
-                                    </ul>
-                                </div>
-                                <!--E 项目中各类文件列表 -->
+							<div class="fbox_bd">
+								<div class="tab-content" id="projectPanelList">
+									<div class="alert alert-error alert_noproject hide">No Projects found!</div>
+								</div>
 							</div>
-						</div>
+						</div><!--/project_main-->
 					</div>
 				</div>
 			</div><!--/row-->
 
 		</div><!--/.fluid-container-->
-
+		<div id="fanMenu" class="fm_wrap">
+			<a href="javascript://" class="fm_btntoggle" title="Toggle Menu"><span>Toggle Menu</span></a>
+			<ul id="fanMenuList" class="fm_list">
+				<li><a id="btnAddFolder" href="#" rel="1" title="Add Existence"><i class="icon-folder-open-alt"></i></a></li>
+				<li><a id="btnCreateFolder" href="#" rel="2" title="Create New Project"><i class="icon-file-alt"></i></a></li>
+			</ul>
+			<input id="ipt_projectFolder" type="file" class="field_projectFolder" nwdirectory="true" name="projectFolder" style="display:none" nwworkingdir=""/>
+		</div>
 		<div class="mod_status">
 			<div id="appStatus" class="alert"></div>
 			<div id="appTip" class="alert alert-tip" style="display:none;"></div>
@@ -185,9 +167,12 @@
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src="js/lib/jquery.min.js"></script>
+		<script src="js/lib/jquery.fanmenu.js"></script>
 		<script src="js/lib/bootstrap.min.js"></script>
 		<script src="js/lib/date.js"></script>
-		<script src="js/lib/jf.core.js"></script>
+		<script src="js/lib/j.core.js"></script>
+		<script src="js/lib/j.evalTpl.js"></script>
+		<script src="js/lib/j.endsWidth.js"></script>
 		<script src="js/data.js"></script>
 		<script src="js/base.js"></script>
 		<script src="js/alert.js"></script>
@@ -197,7 +182,7 @@
 		<script src="js/editor.project.js"></script>
 		<script src="js/default.js"></script>
 		<script type="text/javascript">
-			JF.Init({});
+			J.init({});
 		</script>
 
 	</body>
