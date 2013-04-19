@@ -16,6 +16,8 @@ J(function($,p,pub){
 			this.curProjectIdx = J.dbLocal[pub.id+'.curProjectIdx'] || 0;
 			this.curWorkspaceId = J.dbLocal[pub.id+'.curWorkspaceId']||0;
 		},
+		reset:function(){
+			this.curWorkspace = this.curWorkspace0;
 		},
 		setCurrentWorkspace:function(){
 			var cnt = this.workspaceData.length;
@@ -32,7 +34,11 @@ J(function($,p,pub){
 			};
 
 			this.reset();
+		},
+        firstUpper: function (v) {
+            return v.slice(0,1).toUpperCase() + v.slice(1) ;
         }
+
 	};
 
 	p.V = {
@@ -41,6 +47,7 @@ J(function($,p,pub){
 		$wsOption:$("#wsOption"),
 		tplWSItem0:'<li id="wsItem0"><a href="#" rel="0">Show All</a></li>',
 		tplWSItem:'<li id="wsItem%id%"><a href="#" rel="%id%">%name%</a></li>',
+		//fill workspace switch list
 		fillWSList:function(d){
 			this.$wsList.append(this.tplWSItem0);
 			var cnt = d.cnt,
@@ -100,14 +107,20 @@ J(function($,p,pub){
 				p.V.fillWSList(d);
 				p.M.setCurrentWorkspace();
 				//p.V.fillCurWS();
-                // 填充所有项目
+				J.base.updateStatus("Total workspace:"+d.cnt);
+
 				//get project list
+				J.dataProject.getAll();
 
-			});
-
-            // bind event for get all
-			p.V.$projectList.on("click", "li", function(e){
-				JF.dataProject.getProjectFile($(this).html() );
+			}).on(J.dataWorkspace.id+'OnDataInited',function(e){
+				//get workspace data
+				J.dataWorkspace.getAll();
+			}).on(JF.dataProject.tName + 'OnGetProject', function (e, d) {
+                // 填充所有项目
+				p.V.fillProject(d);
+			}).on(JF.dataProject.tName + 'OnGetProjectFile', function (e, d) {
+                // 填充选中项目下的各类型文件
+			    p.V.fillProjectFile(d); 
 			});
 		},
 		onLoad:function(){

@@ -91,6 +91,7 @@ J(function($,p,pub){
 		//created at
 		d.createdAt = new Date().toString('yyyy-MM-dd HH:mm:ss');
 
+		p.C.save(d,false);
 
 	};
 
@@ -118,9 +119,53 @@ J(function($,p,pub){
 		fs.exists(file,function(exists){
 
 			if (!exists) {
-                $(window).trigger(pub.tName+'OnGetProject', [files]);
+
+				p.C.save(null,true);
+
+				return;
 			};
+
+			J.base.showTip('Load Project data...');
+
+			fs.readFile(file,function(err,data){
+
+				J.base.hideTip();
+
+				if(err) {
+					$win.trigger(pub.id+"OnDataLoaded",[{
+						'isOk':false,
+						'err':err
+					}]);
+					return;
+				}
+
+				data = JSON.parse(data.toString());
+
+				p.M.items = data;
+
+				$win.trigger(pub.id+"OnDataLoaded",[{'isOk':true,'data':data}]);
+
+			});
+
 		});
+	};
+
+	/**
+	 * show projects in specified workspace
+	 * @param {String} workspacePath workspace path
+	 */
+	pub.filterByWorkspace = function(workspacePath){
+		if (workspacePath) {
+			alert('TODO:显示指定workspace的项目'+workspacePath);
+		};
+		
+	};
+	/**
+	 * Get project files from specified project directory
+	 * @param {String} _dir project directory
+	 */
+	pub.getFiles = function(_dir){
+		alert('TODO:加载项目文件'+_dir);
 	};
 
     /**
@@ -145,54 +190,12 @@ J(function($,p,pub){
             (function (k) {
                 fs.readdir(xPath, function(err,files){
                     if (!err) {
-				console.log(files);
+                        console.log('pub getProjectFile:', files);
                         $(window).trigger(pub.tName+'OnGetProjectFile' + ns, {'type': k, 'items': files});
-				return;
                     };
-
-			J.base.showTip('Load Project data...');
-
-			fs.readFile(file,function(err,data){
-
-				J.base.hideTip();
-
-				if(err) {
-					$win.trigger(pub.id+"OnDataLoaded",[{
-						'isOk':false,
-						'err':err
-					}]);
-					return;
-				}
-
-				data = JSON.parse(data.toString());
-
-				p.M.items = data;
-
-				$win.trigger(pub.id+"OnDataLoaded",[{'isOk':true,'data':data}]);
-
-			});
-
                 });
             })(k);
         }
-	};
-
-	/**
-	 * show projects in specified workspace
-	 * @param {String} workspacePath workspace path
-	 */
-	pub.filterByWorkspace = function(workspacePath){
-		if (workspacePath) {
-			alert('TODO:显示指定workspace的项目'+workspacePath);
-		};
-		
-	};
-	/**
-	 * Get project files from specified project directory
-	 * @param {String} _dir project directory
-	 */
-	pub.getFiles = function(_dir){
-		alert('TODO:加载项目文件'+_dir);
 	};
 
 });

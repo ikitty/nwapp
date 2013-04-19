@@ -6,7 +6,8 @@
  * UserDataDir:var userDataDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
  */
 J(function($,p,pub){
-	var p ={},pub={};
+
+	pub.id="data";
 
 	p.C = {
 		init:function(){
@@ -157,7 +158,7 @@ J(function($,p,pub){
 		};
 		return retVal;
 	};
-});
+
     /**
      * 根据单个路径生成各类文件的路径
      *
@@ -171,4 +172,4 @@ J(function($,p,pub){
             }) ;
         }
     };
-
+});
