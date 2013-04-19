@@ -8,6 +8,7 @@
 J(function($,p,pub){
 
 	pub.id="data";
+    var fs = require('fs');
 
 	p.C = {
 		init:function(){
