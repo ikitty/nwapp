@@ -133,6 +133,9 @@ J(function($,p,pub){
 			J.base.showTip('Saving Workspace'+data.name);
 
 			if (p.M.isNew) {
+                // 删除id字段 by Enix
+                data.id = null; 
+                delete data.id ;
 
 				J.dataWorkspace.findByRootPath(data.rootPath,function(results){
 

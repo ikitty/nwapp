@@ -152,3 +152,17 @@
   width: 100%;
   height: 100%;
 }
+
+.tabs_project {padding-top:10px;}
+.tabs_project .nav-tabs {width:200px;margin-right:20px;}
+.tabs_project .nav-tabs li {height:30px;line-height:30px;cursor:pointer;}
+.tabs_project .nav-tabs li:nth-of-type(odd) {background-color:#eee;}
+
+.tabs_project .tab-content ul {float:left;width:20%;border:1px solid #ddd;}
+.tabs_project .tab-content #projectHtml {color:green;}
+.tabs_project .tab-content #projectCss {color:darkblue;}
+.tabs_project .tab-content #projectImg {color:darkred;}
+.tabs_project .tab-content #projectPsd {color:gray;}
+.tabs_project .tab-content li {height:28px;line-height:28px;padding-left:5px;}
+.tabs_project .tab-content li:nth-of-type(even) {background-color:#f5f5f5;}
+.tabs_project .tab-content li:hover {background-color:#ddd;}
