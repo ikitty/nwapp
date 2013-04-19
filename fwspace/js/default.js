@@ -83,7 +83,7 @@ J(function($,p,pub){
             }
 
             for (i = 0, k = null; k = ret[i] ; i++ ) {
-				html.push(JF.EvalTpl(this.tplProjectItem, k));
+				html.push(J.evalTpl(this.tplProjectItem, k));
             }
 
 			this.$projectList.html(html.join(''));
@@ -115,10 +115,10 @@ J(function($,p,pub){
 			}).on(J.dataWorkspace.id+'OnDataInited',function(e){
 				//get workspace data
 				J.dataWorkspace.getAll();
-			}).on(JF.dataProject.tName + 'OnGetProject', function (e, d) {
+			}).on(J.dataProject.tName + 'OnGetProject', function (e, d) {
                 // 填充所有项目
 				p.V.fillProject(d);
-			}).on(JF.dataProject.tName + 'OnGetProjectFile', function (e, d) {
+			}).on(J.dataProject.tName + 'OnGetProjectFile', function (e, d) {
                 // 填充选中项目下的各类型文件
 			    p.V.fillProjectFile(d); 
 			});
