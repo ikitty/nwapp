@@ -1,8 +1,9 @@
 J(function($,p,pub){
 	pub.id="editorWorkspace";
+    var fs = require('fs');
 	
 	p.V={
-		$main:$("#workspaceEditor"),
+		$main:$("#projectEditor"),
 		$title:$("#editorTitle"),
 		$controlGroups:null,
 		onLoad:function(){
@@ -86,8 +87,8 @@ J(function($,p,pub){
 		regexCName:/^[a-zA-Z0-9_\u4e00-\u9fa5-\-]+$/,
 		regexPartialUrl:/^[a-zA-Z0-9\/]+$/,
 		regexIpV4:/^(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))$/,
-		defaultTitle:'Add Workspace',
-		editTitle:'Edit Workspace-',
+		defaultTitle:'Add Project',
+		editTitle:'Edit Project-',
 		duration:0,
 		timer:null
 	};
@@ -100,6 +101,10 @@ J(function($,p,pub){
 				clearTimeout(p.M.timer);
 				p.C.reset();
 			});
+
+            $("#btnCreateFolder").on("click",function(e){
+                p.C.show('', {isNew:true});
+            });
 
 			$("#btnSave").on('click',function(e){
 				p.C.save();
@@ -130,31 +135,25 @@ J(function($,p,pub){
 				return;
 			};
 
-			J.base.showTip('Saving Workspace'+data.name);
+			J.base.showTip('Saving Project '+data.name);
 
+            var fullPath = data.rootPath + data.name + '\\'; 
 			if (p.M.isNew) {
-                // 删除id字段 by Enix
-                data.id = null; 
-                delete data.id ;
-
-				J.dataWorkspace.findByRootPath(data.rootPath,function(results){
-
-					if(results.rows.length!==0){
-						//工作空间已经存在
-						J.alert.show('工作空间已经存在：'+data.rootPath);
-						return;
-					}
-					//新增记录
-					J.dataWorkspace.insert(data);
-
-				});
-
-				return;
+                fs.exists(fullPath, function (ret) {
+                    if (ret) {
+                        J.alert.show('Project已经存在：'+ fullPath);
+                        return;
+                    }
+                    // TODO
+                    // 记录数据 lv的数据接口
+                });
+                console.log('toBeContinue saved data') ;
 			};
+            //TODO 
+            //update lv data
 
-			//更新现有的工作空间
-			J.dataWorkspace.update(data);
-
+            //create dirs
+            var dirs = J.data.createDirs({'rootPath': data.rootPath, 'name': data.name});
 		},
 		validate:function(data){
 			//validate data.name
@@ -175,48 +174,6 @@ J(function($,p,pub){
 				data.rootPath+='\\';
 			};
 
-            // remove by enix
-			// data.id = data.rootPath.replace(/\\/gi,'-').replace(':','').toLowerCase();
-
-			//validate data.remotePath:字母数字和斜杠
-			if (data.remotePath.length!=0) {
-				if(!p.M.regexPartialUrl.test(data.remotePath)){
-					J.alert.show('远程路径无效，请参考"static/icson/"输入！');
-					p.V.validateError('remotePath');
-					return false;
-				}
-				//补全末尾的斜杠
-				if (!J.endsWidth(data.remotePath,'/')) {
-					data.remotePath+='/';
-				};
-				if(data.remotePath[0]=="/"){ //删除开头的斜杠
-					data.remotePath = data.remotePath.substr(1);
-				};
-			};
-
-			//validate data.ftpId
-			if (!p.M.regexIpV4.test(data.ftpId)) {
-				J.alert.show('ftp id无效！');
-				p.V.validateError('ftpId');
-				return false;
-			};
-
-			//validate data.ftpPort
-			if (!p.M.regexInt.test(data.ftpPort)) {
-				J.alert.show('ftp端口无效！');
-				p.V.validateError('ftpPort');
-				return false;
-			};
-
-			//validate data.ftpUser & data.ftpPwd
-			if (data.ftpUser.length==0) {
-				p.V.validateError('ftpUser');
-				return false;
-			};
-			if (data.ftpPwd.length == 0) {
-				p.V.validateError('ftpPwd');
-				return false;
-			};
 			return true;
 		},
 		show:function(item,opts){

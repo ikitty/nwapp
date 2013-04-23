@@ -231,4 +231,34 @@ J(function($,p,pub){
 		});
 	};
 
+    /**
+     * 根据项目路径(CSS)获取各类型文件
+     *
+     * @author alextang
+     * @param {String} path 项目路径，如：E:/icson/css/common
+     * @return return something
+     **/
+	pub.getProjectFile = function(path, ns){
+        if (!path) {
+            return  ;
+        }
+        // TODO get lv type data : searchTag
+        // make path
+        var pathType = ['html', 'css', 'img', 'psd'],
+            ns = ns || '',
+            xPath ;
+
+        for (var i = 0, k = null; k = pathType[i] ; i++ ) {
+            xPath = path.replace('css', k);
+            (function (k) {
+                fs.readdir(xPath, function(err,files){
+                    if (!err) {
+                        console.log('pub getProjectFile:', files);
+                        $(window).trigger(pub.tName+'OnGetProjectFile' + ns, {'type': k, 'items': files});
+                    };
+                });
+            })(k);
+        }
+	};
+
 });

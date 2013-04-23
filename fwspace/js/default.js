@@ -35,22 +35,31 @@ J(function($,p,pub){
 			};
 
 			this.reset();
-		}
+		},
+        firstUpper: function (v) {
+            return v.slice(0,1).toUpperCase() + v.slice(1) ;
+        }
+
 	};
 
 	p.V = {
 		$wsList:$("#wsList"),
+		$projectList:$("#projectNavList"),
+		$wsOption:$("#wsOption"),
 		tplWSItem0:'<li id="wsItem0"><a href="#" rel="0">Show All</a></li>',
 		tplWSItem:'<li id="wsItem%id%"><a href="#" rel="%id%">%name%</a></li>',
 		//fill workspace switch list
 		fillWSList:function(d){
 			this.$wsList.append(this.tplWSItem0);
 			var cnt = d.cnt,
+                htmlOption = '',
 				html = [];
 			for (var i = cnt - 1; i >= 0; i--) {
 				html.push(J.evalTpl(this.tplWSItem,d.items[i],true));
+                htmlOption += '<option value="' + d.items[i].rootPath + '">' + d.items[i].name + '</option>' ;
 			};
 			this.$wsList.append(html.join(''));
+			this.$wsOption.html(htmlOption);
 		},
 		//switch to specified workspace
 		switchWS:function(ws){
@@ -63,7 +72,33 @@ J(function($,p,pub){
 		},
 		resetWSList:function(){
 			this.$wsList.find('li').removeClass('active');
-		}
+		},
+
+        // 填充当前工作空间下的所有项目
+        fillProject: function (d) {
+			var html = [];
+            // to obj
+            var ret = [] ;
+            for (var i = 0, k = null; k = d[i] ; i++ ) {
+                ret.push({'projectFullPath': k.path, 'projectName': k.name});
+            }
+
+            for (i = 0, k = null; k = ret[i] ; i++ ) {
+				html.push(J.evalTpl(this.tplProjectItem, k));
+            }
+
+			this.$projectList.html(html.join(''));
+        },
+
+        // 填充当前项目下各类型文件
+        fillProjectFile: function (d) {
+			var html = '';
+
+            for (var i = 0, k = null; k = d.items[i] ; i++ ) {
+                html += '<li>' + k + '</li>' ;
+            }
+            $('#project' + p.M.firstUpper(d.type)).html(html);
+        }
 	};
 
 	p.C = {
@@ -81,6 +116,12 @@ J(function($,p,pub){
 			}).on(J.dataWorkspace.id+'OnDataInited',function(e){
 				//get workspace data
 				J.dataWorkspace.getAll();
+			}).on(J.dataProject.tName + 'OnGetProject', function (e, d) {
+                // 填充所有项目
+				p.V.fillProject(d);
+			}).on(J.dataProject.tName + 'OnGetProjectFile', function (e, d) {
+                // 填充选中项目下的各类型文件
+			    p.V.fillProjectFile(d); 
 			});
 		},
 		onLoad:function(){

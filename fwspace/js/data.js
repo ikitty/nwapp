@@ -8,6 +8,7 @@
 J(function($,p,pub){
 
 	pub.id="data";
+    var fs = require('fs');
 
 	p.C = {
 		init:function(){
@@ -158,4 +159,18 @@ J(function($,p,pub){
 		};
 		return retVal;
 	};
+
+    /**
+     * 根据单个路径生成各类文件的路径
+     *
+     * @param {Object} path 路径对象，可以根据需要将零散的子路径传进来
+     **/
+    pub.createDirs = function (path) {
+        var types = ['html', 'css', 'img', 'psd'] ;
+        for (var i = 0, k = null; k = types[i] ; i++ ) {
+            fs.mkdir(path.rootPath + k + '\\' + path.name, 0777, function () {
+                console.log('mkdir ok') ;
+            }) ;
+        }
+    };
 });
