@@ -12,8 +12,11 @@ J(function($,p,pub){
 			'exeCss':'',
 			'exeImg':'',
 			'exeLess':'',
-			//当路径出现/searchFlag0/时，同时检索/searchFlagx/下的文件
-			'searchFlag':'img,html,css,less,psd,images',
+			//检索标志，用于获取项目文件时用
+			//当路径出现/{searchFlag}0/时，同时检索/{searchFlag}x/下的文件
+			'searchFlag':['img','html','css','less','psd','images'],
+			//检索的文件扩展名
+			'ext':['.jpg','.gif','.png','.html','.css','.less','.js'],
 			'createdAt':new Date().toString('yyyy-MM-dd HH:mm:ss'),
 			'modifiedAt':new Date().toString('yyyy-MM-dd HH:mm:ss')
 		}
@@ -38,7 +41,7 @@ J(function($,p,pub){
 							}]);
 							return;
 						};
-						fs.writeFile(J.base.initFile,JSON.stringify(pub.data),function(err){
+						fs.writeJson(J.base.initFile,pub.data,function(err){
 							$(window).trigger(pub.id+"OnLoaded",[{
 								isOk:true,
 								isNew:true
@@ -53,7 +56,7 @@ J(function($,p,pub){
 
 				J.base.showTip('Load Config data...');
 
-				fs.readFile(J.base.initFile,function(err,data){
+				fs.readJson(J.base.initFile,function(err,data){
 
 					J.base.hideTip();
 
@@ -63,9 +66,9 @@ J(function($,p,pub){
 						}])
 						return;
 					}
-
-					data = JSON.parse(data.toString());
-
+					if (typeof(data.searchFlag)==='string') {
+						data.searchFlag = data.searchFlag.split(',');
+					};
 					J.dataSetting.data = data;
 
 					$(window).trigger(pub.id+"OnLoaded",[{isOk:true}]);
@@ -82,9 +85,7 @@ J(function($,p,pub){
 		
 		item = $.extend({},pub.instance,item||{});
 
-		var txt = JSON.stringify(item);
-
-		fs.writeFile(J.base.initFile,txt,function(err){
+		fs.writeJson(J.base.initFile,item,function(err){
 			if (err) {
 
 				$(window).trigger(pub.id+"OnSavedError",[err]);

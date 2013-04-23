@@ -1,7 +1,8 @@
 J(function($,p,pub){
 	pub.id ="home";
 
-	var $win = $(window);
+	var $win = $(window),
+		g_clActive = 'active';
 
 	p.M = {
 		workspaceData:null,
@@ -13,8 +14,8 @@ J(function($,p,pub){
 		},
 		init:function(){
 			this.reset();
-			this.curProjectIdx = J.dbLocal[pub.id+'.curProjectIdx'] || 0;
-			this.curWorkspaceId = J.dbLocal[pub.id+'.curWorkspaceId']||0;
+			this.curProjectIdx = parseInt(J.dbLocal[pub.id+'.curProjectIdx'])||0;
+			this.curWorkspaceId = parseInt(J.dbLocal[pub.id+'.curWorkspaceId'])||0;
 		},
 		reset:function(){
 			this.curWorkspace = this.curWorkspace0;
@@ -117,7 +118,7 @@ J(function($,p,pub){
 
 	p.project={
 		V:{
-			tplNavItem:'<li><a id="project%id%" rel="%id%" href="#%name%" data-toggle="tab" data-path="%path%">%name%</a></li>',
+			tplNavItem:'<li id="projectItem%id%"><a id="project%id%" rel="%id%" href="#%name%" data-toggle="tab" data-path="%path%">%name%</a></li>',
 			$projectNavList:$("#projectNavList")
 		},
 		init:function(){
@@ -129,7 +130,7 @@ J(function($,p,pub){
 				};
 				p.project.fillProjects(d.data);
 				p.C.switchWorspace(p.M.curWorkspaceId);
-				p.project.initSelected();
+				
 			}).on(J.dataProject.id+'OnSaved',function(e,d){
 				p.project.onProjectSaved(d);
 
@@ -163,19 +164,26 @@ J(function($,p,pub){
 			});
 
 			this.V.$projectNavList.on('click','a',function(e){
-				J.dbLocal[pub.id+'.curProjectIdx']=p.M.curProjectIdx = parseInt(this.rel);
-				J.dataProject.getFiles(this.getAttribute('data-path'));
+				p.project.selectProject({
+					'idx':this.rel,
+					'path':this.getAttribute('data-path')
+				});
 				return false;
 			});
 		},
 		filterByWorkspace:function(){
-			J.dataProject.filterByWorkspace(p.M.curWorkspace.rootPath);
+			var items = J.dataProject.filterByWorkspace(p.M.curWorkspace.rootPath);
 			//init folder for input[type='file']：NOTE：nw v5.0后支持
 			$("#ipt_projectFolder").attr('nwworkingdir',p.M.curWorkspace.rootPath||'');
+			this.fillProjects(items);
+			this.initSelected();
 		},
 		//fill projects
 		fillProjects:function(data){
 			var len =0;
+
+			this.V.$projectNavList.empty();
+
 			if ((len=data.length)==0) {
 				$("#projectMain").addClass('project_none');
 				return;
@@ -186,6 +194,13 @@ J(function($,p,pub){
 		},
 		initSelected:function(){
 			$('#project'+p.M.curProjectIdx).trigger('click');
+		},
+		selectProject:function(obj){
+			$("#projectItem"+p.M.curProjectIdx).removeClass(g_clActive);
+			J.dbLocal[pub.id+'.curProjectIdx']=p.M.curProjectIdx = parseInt(obj.idx);
+			J.dataProject.getFiles(obj.path);
+			//Menu state
+			$("#projectItem"+obj.idx).addClass(g_clActive);
 		},
 		onProjectSaved:function(d){
 			if (!d.isOk) {

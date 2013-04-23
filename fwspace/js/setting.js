@@ -29,6 +29,11 @@ J(function($,p,pub){
 		render:function(data){
 
 			for (var c in data) {
+				//special searchFlag proccessing
+				if (c==='searchFlag') {
+					this.$fields.filter('.field_'+c).val(data[c].join(','));
+					continue;
+				};
 				this.$fields.filter('.field_'+c).val(data[c]);
 			};
 
@@ -41,6 +46,11 @@ J(function($,p,pub){
 		getData:function(){
 			var data = {};
 			this.$fields.each(function(i,o){
+				//special searchFlag proccessing
+				if (o.name==='searchFlag') {
+					data[o.name] = $.trim($(o).val()).sprit(',');
+					return;
+				};
 				data[o.name] = $.trim($(o).val());
 			});
 

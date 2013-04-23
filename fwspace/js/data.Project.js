@@ -24,7 +24,7 @@ J(function($,p,pub){
 				p.M.items.push(d);
 			};
 
-			fs.writeFile(p.M.dataFile,JSON.stringify(p.M.items),function(err){
+			fs.writeJson(p.M.dataFile,p.M.items,function(err){
 				var isOk =true;
 				if (err) {
 					isOk = false;
@@ -71,7 +71,7 @@ J(function($,p,pub){
 	pub.addDirAsProject=function(_dir){
 
 		if (pub.exists(_dir)) {
-			$win.trigger(pub.id+'OnSaved',[{isOk:false,err:'Project directly exists:'+_dir}]);
+			$win.trigger(pub.id+'OnSaved',[{isOk:false,err:'Project directory exists:'+_dir}]);
 			return;
 		};
 
@@ -102,6 +102,9 @@ J(function($,p,pub){
 	pub.exists = function(_dir){
 		var yes = false,
 			len = p.M.items.length;
+
+		_dir = J.endsWidth(_dir,'\\')?_dir:(_dir+'\\');
+
 		for (var i = len - 1; i >= 0; i--) {
 			if (p.M.items[i].path==_dir) {
 				yes=true;
@@ -127,7 +130,7 @@ J(function($,p,pub){
 
 			J.base.showTip('Load Project data...');
 
-			fs.readFile(file,function(err,data){
+			fs.readJson(file,function(err,data){
 
 				J.base.hideTip();
 
@@ -138,8 +141,6 @@ J(function($,p,pub){
 					}]);
 					return;
 				}
-
-				data = JSON.parse(data.toString());
 
 				p.M.items = data;
 
@@ -155,9 +156,20 @@ J(function($,p,pub){
 	 * @param {String} workspacePath workspace path
 	 */
 	pub.filterByWorkspace = function(workspacePath){
-		if (workspacePath) {
-			alert('TODO:显示指定workspace的项目'+workspacePath);
+
+		if (!workspacePath) {
+			return p.M.items;
 		};
+
+		var items = p.M.items,
+			len = items.length,
+			items1 = [];
+		for (var i = 0; i < len; i++) {
+			if (items[i].path.indexOf(workspacePath)==0) {
+				items1.push(items[i]);
+			};
+		};
+		return items1;
 		
 	};
 	/**
@@ -165,7 +177,58 @@ J(function($,p,pub){
 	 * @param {String} _dir project directory
 	 */
 	pub.getFiles = function(_dir){
-		alert('TODO:加载项目文件'+_dir);
+		fs.exists(_dir,function(yes){
+			if (!yes) {
+				$win.trigger(pub.id+'OnGetFiles',[{
+					isOk:false,
+					'err':'Directory not exists!'+_dir
+				}]);
+				return;
+			};
+
+			//read all files according to the J.dataSetting.data.searchFlag
+			fs.readdir(_dir,function(err,files){
+				if (err) {
+					$win.trigger(pub.id+'OnGetFiles',[{
+						isOk:false,
+						'err':err
+					}]);
+					return;
+				};
+				//console.log(files);
+				var d = {
+					folders:[]
+				},
+					flags = J.dataSetting.data.searchFlag,
+					len1 = flags.length,
+					len2 = files.length,
+					stat = null;
+				for (var i = len1- 1; i >= 0; i--) {
+					d[flags[i]] = [];
+				};
+				//TODO:
+				for (var j = len2 - 1; i >= 0; i--) {
+					stat = fs.lstatSync(files[j]);
+					//directory
+					if (stat.isDirectory()) {
+						d.folders.push(_dir+'\\'+files[j]+'\\');
+						continue;
+					};
+					if (!stat.isFile()) {
+						continue;
+					};
+					//file
+					
+					for (var i = len1 - 1; i >= 0; i--) {
+						if ( (_dir+'\\'+files[j]).indexOf('\\'+flags[i]+'\\') > -1 ) {
+							d[flags[i]].push(_dir+'\\'+files[j]);
+							break;
+						};
+					};
+
+				};
+			});
+		});
 	};
 
 });
