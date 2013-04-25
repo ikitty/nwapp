@@ -71,16 +71,7 @@ J(function($,p,pub){
 		},
 		resetWSList:function(){
 			this.$wsList.find('li').removeClass('active');
-		},
-        // 填充当前项目下各类型文件
-        fillProjectFile: function (d) {
-			var html = '';
-
-            for (var i = 0, k = null; k = d.items[i] ; i++ ) {
-                html += '<li>' + k + '</li>' ;
-            }
-            $('#project' + p.M.firstUpper(d.type)).html(html);
-        }
+		}
 	};
 
 	p.C = {
@@ -98,9 +89,6 @@ J(function($,p,pub){
 			}).on(J.dataWorkspace.id+'OnDataInited',function(e){
 				//get workspace data
 				J.dataWorkspace.getAll();
-			}).on(J.dataProject.tName + 'OnGetProjectFile', function (e, d) {
-                // 填充选中项目下的各类型文件
-			    p.V.fillProjectFile(d); 
 			});
 		},
 		onLoad:function(){
@@ -274,9 +262,6 @@ J(function($,p,pub){
 
 			J.dataProject.addDirAsProject(_dir);
 
-		},
-		openForm:function(){
-			alert('TODO:create New Project');
 		}
 	};
 
