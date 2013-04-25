@@ -190,10 +190,6 @@ J(function($,p,pub){
 					p.project.openDir();
 					return false;
 				};
-				if (this.rel=="2") {
-					p.project.openForm();
-					return false;
-				};
 				return false;
 			});
 			//add a project folder
