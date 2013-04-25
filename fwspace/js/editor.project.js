@@ -1,5 +1,5 @@
 J(function($,p,pub){
-	pub.id="editorWorkspace";
+	pub.id="editorProject";
     var fs = require('fs');
 	
 	p.V={
@@ -9,16 +9,10 @@ J(function($,p,pub){
 		onLoad:function(){
 			this.$fields = this.$main.find('.field_item');
 			this.$controlGroups = this.$main.find('.control-group');
-			//文件夹路径
-			$("#ipt_rootPath1").on("change",function(e){
-				if (this.value.length>0) {
-					document.getElementById(this.getAttribute('data-target')).value = this.value;
-				};
-			});
 
 			//监听事件
-			var id = J.dataWorkspace.id;
-			$(window).on(id+'OnInserted',function(e,d){
+			var id = J.dataProject.id;
+			$(window).on(id+'OnSaved',function(e,d){
 				location.reload();
 			}).on(id+'OnInsertedError',function(e,d){
 				J.alert.show('WebSQL增加记录时发生错误！');
@@ -86,7 +80,6 @@ J(function($,p,pub){
 		regexName:/^[a-zA-Z0-9_\-]+$/,//alpha,number,underline,dashline
 		regexCName:/^[a-zA-Z0-9_\u4e00-\u9fa5-\-]+$/,
 		regexPartialUrl:/^[a-zA-Z0-9\/]+$/,
-		regexIpV4:/^(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))$/,
 		defaultTitle:'Add Project',
 		editTitle:'Edit Project-',
 		duration:0,
@@ -108,10 +101,6 @@ J(function($,p,pub){
 
 			$("#btnSave").on('click',function(e){
 				p.C.save();
-			});
-
-			$("#btnNew").on("click",function(e){
-				J.editorWorkspace.show("",{isNew:true});
 			});
 
 			$("#btnDelete").on('click',function(e){
@@ -144,13 +133,10 @@ J(function($,p,pub){
                         J.alert.show('Project已经存在：'+ fullPath);
                         return;
                     }
-                    // TODO
-                    // 记录数据 lv的数据接口
+                    // 记录数据
+                    J.dataProject.addDirAsProject(fullPath);
                 });
-                console.log('toBeContinue saved data') ;
 			};
-            //TODO 
-            //update lv data
 
             //create dirs
             var dirs = J.data.createDirs({'rootPath': data.rootPath, 'name': data.name});
