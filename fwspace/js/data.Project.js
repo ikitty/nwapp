@@ -177,58 +177,56 @@ J(function($,p,pub){
 	 * @param {String} _dir project directory
 	 */
 	pub.getFiles = function(_dir){
-		fs.exists(_dir,function(yes){
-			if (!yes) {
-				$win.trigger(pub.id+'OnGetFiles',[{
-					isOk:false,
-					'err':'Directory not exists!'+_dir
-				}]);
-				return;
+
+		var topFolders = [_dir],
+			projectType,//项目类型标识
+			flags = J.dataSetting.data.searchFlag,
+			flags1 = [],
+			flagIndex = 0,
+			flagFound =false,
+			len1 = flags.length,
+			filesData = {};
+
+		//获取项目类型
+		for (var i = len1 - 1; i >= 0; i--) {
+			filesData[flags[i]]=[];
+			if ( (!flagFound) && ( flagIndex = _dir.indexOf('\\'+flags[i]+'\\') ) >0 ) {
+				projectType=1;
+				flagFound =true;
 			};
+			if (projectType!==1) {
+				flags1.push(flags[i]);
+			};
+		};
 
-			//read all files according to the J.dataSetting.data.searchFlag
-			fs.readdir(_dir,function(err,files){
-				if (err) {
-					$win.trigger(pub.id+'OnGetFiles',[{
-						isOk:false,
-						'err':err
-					}]);
-					return;
-				};
-				//console.log(files);
-				var d = {
-					folders:[]
-				},
-					flags = J.dataSetting.data.searchFlag,
-					len1 = flags.length,
-					len2 = files.length,
-					stat = null;
-				for (var i = len1- 1; i >= 0; i--) {
-					d[flags[i]] = [];
-				};
-				//TODO:
-				for (var j = len2 - 1; i >= 0; i--) {
-					stat = fs.lstatSync(files[j]);
-					//directory
-					if (stat.isDirectory()) {
-						d.folders.push(_dir+'\\'+files[j]+'\\');
-						continue;
-					};
-					if (!stat.isFile()) {
-						continue;
-					};
-					//file
-					
-					for (var i = len1 - 1; i >= 0; i--) {
-						if ( (_dir+'\\'+files[j]).indexOf('\\'+flags[i]+'\\') > -1 ) {
-							d[flags[i]].push(_dir+'\\'+files[j]);
-							break;
-						};
-					};
+		projectType = typeof(projectType)==='undefined'?2:1;
 
-				};
-			});
-		});
+		//获取顶级搜索目录
+		//1,对于按类型目录结构存放的项目-例如易迅...
+		//搜索的目标路径格式为：E:/yyy/{searchFlag}/xxx/
+		//2,对于普通按项目目录结构存放的项目
+		//搜索的目标路径格式为：E:/yyy/xxx/{searchFlag}/
+		var folderPrefix,folderSuffix;
+		if (projectType==1) {
+			folderPrefix = _dir.substr(0,flagIndex+1);
+			folderSuffix = _dir.substr(flagIndex+1);
+			folderSuffix = folderSuffix.substr(folderSuffix.indexOf('\\'));
+			len1 = flags1.length;
+			for (var i = len1 - 1; i >= 0; i--) {
+				topFolders.push(folderPrefix+flags1[i]+folderSuffix);
+			};
+		}else{
+			for (var i = len1 - 1; i >= 0; i--) {
+				topFolders.push(_dir+flags[i]+'\\');
+			};
+		};
+
+		//read all files according to the J.dataSetting.data.searchFlag
+		len1 = topFolders.length;
+		for (var i = len1 - 1; i >= 0; i--) {
+			J.dataDir.getFiles(topFolders[i]);
+		};
+
 	};
 
     /**

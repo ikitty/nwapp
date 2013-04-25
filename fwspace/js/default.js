@@ -44,7 +44,6 @@ J(function($,p,pub){
 
 	p.V = {
 		$wsList:$("#wsList"),
-		$projectList:$("#projectNavList"),
 		$wsOption:$("#wsOption"),
 		tplWSItem0:'<li id="wsItem0"><a href="#" rel="0">Show All</a></li>',
 		tplWSItem:'<li id="wsItem%id%"><a href="#" rel="%id%">%name%</a></li>',
@@ -73,23 +72,6 @@ J(function($,p,pub){
 		resetWSList:function(){
 			this.$wsList.find('li').removeClass('active');
 		},
-
-        // 填充当前工作空间下的所有项目
-        fillProject: function (d) {
-			var html = [];
-            // to obj
-            var ret = [] ;
-            for (var i = 0, k = null; k = d[i] ; i++ ) {
-                ret.push({'projectFullPath': k.path, 'projectName': k.name});
-            }
-
-            for (i = 0, k = null; k = ret[i] ; i++ ) {
-				html.push(J.evalTpl(this.tplProjectItem, k));
-            }
-
-			this.$projectList.html(html.join(''));
-        },
-
         // 填充当前项目下各类型文件
         fillProjectFile: function (d) {
 			var html = '';
@@ -116,9 +98,6 @@ J(function($,p,pub){
 			}).on(J.dataWorkspace.id+'OnDataInited',function(e){
 				//get workspace data
 				J.dataWorkspace.getAll();
-			}).on(J.dataProject.tName + 'OnGetProject', function (e, d) {
-                // 填充所有项目
-				p.V.fillProject(d);
 			}).on(J.dataProject.tName + 'OnGetProjectFile', function (e, d) {
                 // 填充选中项目下的各类型文件
 			    p.V.fillProjectFile(d); 
@@ -159,8 +138,35 @@ J(function($,p,pub){
 
 	p.project={
 		V:{
-			tplNavItem:'<li id="projectItem%id%"><a id="project%id%" rel="%id%" href="#%name%" data-toggle="tab" data-path="%path%">%name%</a></li>',
-			$projectNavList:$("#projectNavList")
+			tplNavItem:'<li id="projectItem%id%"><a id="project%id%" rel="%id%" href="#projectPanel%id%" data-toggle="tab" data-path="%path%">%name%</a></li>',
+			tplProjectPanel:'<div id="projectPanel%id%" class="tab-panel"></div>',
+			$projectNavList:$("#projectNavList"),
+			$projectPanelList:$("#projectPanelList"),
+			fillFiles:function(d){
+				var panel =document.getElementById('projectPanel'+p.M.curProjectIdx),
+					html = [],
+					len = null;
+
+				html.push('<h3>');
+				html.push(d.path);
+				html.push('</h3>');
+				//目录读取失败
+				if ( !d.isOk ) {
+					html.push('<div class="alert alert-error">');
+					html.push(d.errCode==2?d.err.toString():"No Files Found!");
+					html.push('</div>');
+				}else{
+					html.push('<ul>');
+					len = d.files.length;
+					for (var i = len - 1; i >= 0; i--) {
+						html.push('<li>'+d.files[i]+'</li>');
+					};
+					html.push('</ul>');
+				};
+				
+
+				panel.innerHTML+=html.join('');
+			}
 		},
 		init:function(){
 			$win.on(J.dataProject.id+'OnDataLoaded',function(e,d){
@@ -177,6 +183,8 @@ J(function($,p,pub){
 
 			}).on(pub.id+'OnSwitchWorkspace',function(e,d){
 				p.project.filterByWorkspace();
+			}).on(J.dataDir.id+'OnGetFiles',function(e,d){
+				p.project.V.fillFiles(d);
 			});
 		},
 		onLoad:function(){
@@ -224,24 +232,36 @@ J(function($,p,pub){
 			var len =0;
 
 			this.V.$projectNavList.empty();
+			this.V.$projectPanelList.empty();
 
 			if ((len=data.length)==0) {
 				$("#projectMain").addClass('project_none');
 				return;
 			};
+			var html = [],htmlPanel=[];
 			for (var i = len - 1; i >= 0; i--) {
-				this.V.$projectNavList.append(J.evalTpl(this.V.tplNavItem,data[i],true));
+				html.push(J.evalTpl(this.V.tplNavItem,data[i],true));
+				htmlPanel.push(J.evalTpl(this.V.tplProjectPanel,data[i],true));
 			};
+			this.V.$projectNavList.append(html.join(''));
+			this.V.$projectPanelList.append(htmlPanel.join(''));
 		},
 		initSelected:function(){
 			$('#project'+p.M.curProjectIdx).trigger('click');
 		},
 		selectProject:function(obj){
-			$("#projectItem"+p.M.curProjectIdx).removeClass(g_clActive);
+			$("#projectItem"+p.M.curProjectIdx+","+'#projectPanel'+p.M.curProjectIdx).removeClass(g_clActive);
 			J.dbLocal[pub.id+'.curProjectIdx']=p.M.curProjectIdx = parseInt(obj.idx);
-			J.dataProject.getFiles(obj.path);
 			//Menu state
 			$("#projectItem"+obj.idx).addClass(g_clActive);
+			//Panel state
+			var $panel = $('#projectPanel'+p.M.curProjectIdx);
+			$panel.addClass(g_clActive);
+			//检测是否已经读取
+			if ($panel.attr('data-loaded')!=='1') {
+				J.dataProject.getFiles(obj.path);
+				return;
+			};
 		},
 		onProjectSaved:function(d){
 			if (!d.isOk) {
