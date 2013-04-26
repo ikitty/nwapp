@@ -178,21 +178,24 @@ J(function($,p,pub){
 	 */
 	pub.getFiles = function(_dir){
 
-		var topFolders = [_dir],
+		var topFolders = [],
 			projectType,//项目类型标识
 			flags = J.dataSetting.data.searchFlag,
 			flags1 = [],
 			flagIndex = 0,
 			flagFound =false,
-			len1 = flags.length,
-			filesData = {};
+			len1 = flags.length;
 
 		//获取项目类型
 		for (var i = len1 - 1; i >= 0; i--) {
-			filesData[flags[i]]=[];
+
 			if ( (!flagFound) && ( flagIndex = _dir.indexOf('\\'+flags[i]+'\\') ) >0 ) {
 				projectType=1;
 				flagFound =true;
+				topFolders.push({
+					'flag':flags[i],
+					'path':_dir
+				});
 			};
 			if (projectType!==1) {
 				flags1.push(flags[i]);
@@ -213,18 +216,30 @@ J(function($,p,pub){
 			folderSuffix = folderSuffix.substr(folderSuffix.indexOf('\\'));
 			len1 = flags1.length;
 			for (var i = len1 - 1; i >= 0; i--) {
-				topFolders.push(folderPrefix+flags1[i]+folderSuffix);
+				topFolders.push({
+					'flag':flags1[i],
+					'path':(folderPrefix+flags1[i]+folderSuffix)
+				});
 			};
 		}else{
+			//跟目录
+			topFolders.push({
+				'flag':'..',
+				'path':_dir
+			});
+			//子目录
 			for (var i = len1 - 1; i >= 0; i--) {
-				topFolders.push(_dir+flags[i]+'\\');
+				topFolders.push({
+					'flag':flags[i],
+					'path':(_dir+flags[i]+'\\')
+				});
 			};
 		};
 
 		//read all files according to the J.dataSetting.data.searchFlag
 		len1 = topFolders.length;
 		for (var i = len1 - 1; i >= 0; i--) {
-			J.dataDir.getFiles(topFolders[i]);
+			J.dataDir.getFiles(topFolders[i],true);
 		};
 
 	};

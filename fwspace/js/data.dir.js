@@ -5,10 +5,12 @@ J(function($,p,pub){
 
 	pub.id = "dataDir";
 
-	var fs = require('fs-extra'),
+	var fs = J.base.fs,
 		$win = $(window);
 
-	p.getFiles = function(_dir,_includeSubDir){
+	p.getFiles = function(_dirObj,_includeSubDir){
+
+		var _dir = _dirObj.path;
 
 		fs.exists(_dir,function(yes){
 			if (!yes) {
@@ -16,7 +18,8 @@ J(function($,p,pub){
 					isOk:false,
 					'err':'Directory Not Exists:'+_dir,
 					'errCode':1,
-					path:_dir
+					'path':_dir,
+					'dirObj':_dirObj
 				}]);
 				return;
 			};
@@ -27,7 +30,8 @@ J(function($,p,pub){
 						isOk:false,
 						'err':err,
 						'errCode':2,
-						path:_dir
+						'path':_dir,
+						'dirObj':_dirObj
 					}]);
 					return;
 				};
@@ -36,7 +40,8 @@ J(function($,p,pub){
 					isOk:true,
 					path:_dir,
 					files:[],
-					folders:[]
+					folders:[],
+					dirObj:_dirObj
 				},stat = null,
 					len2 = files.length;
 
@@ -46,7 +51,10 @@ J(function($,p,pub){
 					if (stat.isDirectory()) {
 						d.folders.push(_dir+files[i]+'\\');
 						if (_includeSubDir) {
-							p.getFiles(_dir+files[i]+'\\',_includeSubDir);
+							p.getFiles({
+								'flag':_dirObj.flag+'\\'+files[i],
+								'path':(_dir+files[i]+'\\')
+							},_includeSubDir);
 						};
 						continue;
 					};
@@ -54,8 +62,22 @@ J(function($,p,pub){
 						continue;
 					};
 					//file
-					d.files.push(_dir+files[i]);
-				};
+					d.files.push({
+						'path':(_dir+files[i]),
+						'name':files[i],
+						'dir':_dir,
+						'stat':stat,
+						'size1':function(){
+							return (this.size/1024).toFixed(2);
+						},
+						'mtime1':function(){
+							return new Date(this.mtime.getTime()).toString('yyyy-MM-dd HH:mm:ss');
+							//return this.mtime.getTime();
+						}
+					});
+				};//for
+
+				d.cntFile = d.files.length===0?false:d.files.length;
 
 				$win.trigger(pub.id+'OnGetFiles',[d]);
 
@@ -68,11 +90,11 @@ J(function($,p,pub){
 
 	/*
 	 * Get all files in specifed directory
-	 * @param {String} _dir directory
+	 * @param {Object} _dirObj directory object like {flag:'xxx',path:'E:\xxx\yyy\'}
 	 * @param {String} _includeSubDir whether including the sub-direcoties
 	 */
-	pub.getFiles = function(_dir,_includeSubDir){
-		p.getFiles(_dir,_includeSubDir)
+	pub.getFiles = function(_dirObj,_includeSubDir){
+		p.getFiles(_dirObj,_includeSubDir)
 	};
 
 });

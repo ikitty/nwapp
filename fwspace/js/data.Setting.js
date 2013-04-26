@@ -12,6 +12,7 @@ J(function($,p,pub){
 			'exeCss':'',
 			'exeImg':'',
 			'exeLess':'',
+			'exeHtml':'',
 			//检索标志，用于获取项目文件时用
 			//当路径出现/{searchFlag}0/时，同时检索/{searchFlag}x/下的文件
 			'searchFlag':['img','html','css','less','psd','images'],
@@ -97,6 +98,27 @@ J(function($,p,pub){
 			J.dataSetting.data = item;
 
 		});
+	};
+
+	/**
+	 * 根据文件获取配置的应用程序
+	 * @param {String} filePath 文件路径
+	 */
+	pub.getExeByFile = function(filePath){
+		var ext = J.base.getFileExt(filePath);
+		ext = ext.toUpperCase();
+		var exeStr = null,
+			tempObj = null;
+		for(var c in pub.data){
+			if(c.indexOf('exe')!==0){
+				continue;
+			}
+			tempObj = c.toUpperCase();
+			if (tempObj.indexOf(ext)>0) {
+				exeStr = pub.data[c];
+			};
+		}//for
+		return exeStr;
 	};
 	
 });

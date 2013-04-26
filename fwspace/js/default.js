@@ -2,7 +2,9 @@ J(function($,p,pub){
 	pub.id ="home";
 
 	var $win = $(window),
-		g_clActive = 'active';
+		g_clActive = 'active',
+		T = Mustache,
+		cprocess = require('child_process');
 
 	p.M = {
 		workspaceData:null,
@@ -127,39 +129,35 @@ J(function($,p,pub){
 	p.project={
 		V:{
 			tplNavItem:'<li id="projectItem%id%"><a id="project%id%" rel="%id%" href="#projectPanel%id%" data-toggle="tab" data-path="%path%">%name%</a></li>',
-			tplProjectPanel:'<div id="projectPanel%id%" class="tab-panel"></div>',
+			tplNoProject:'<li id="alertNoProject"><div class="alert alert-error alert_noproject">No Projects found!</div></li>',
+			tplProjectPanel:'<div id="projectPanel%id%" class="tab-pane"></div>',
+			tplProjectDir:document.getElementById('tplProjectDir').innerHTML,
 			$projectNavList:$("#projectNavList"),
 			$projectPanelList:$("#projectPanelList"),
+			$projectMain:$("#projectMain"),
 			fillFiles:function(d){
-				var panel =document.getElementById('projectPanel'+p.M.curProjectIdx),
-					html = [],
-					len = null;
+				//d.errCode为1时为目录不存在，为2时目录读取失败
+				if ( (!d.isOk) && (d.errCode==1) ) {
+					return;
+				};
 
-				html.push('<h3>');
-				html.push(d.path);
-				html.push('</h3>');
-				//目录读取失败
-				if ( !d.isOk ) {
-					html.push('<div class="alert alert-error">');
-					html.push(d.errCode==2?d.err.toString():"No Files Found!");
-					html.push('</div>');
-				}else{
-					html.push('<ul>');
-					len = d.files.length;
-					for (var i = len - 1; i >= 0; i--) {
-						html.push('<li>'+d.files[i]+'</li>');
-					};
-					html.push('</ul>');
+				if (!d.isOk) {
+					d.errStr = d.err.toString();
 				};
 				
+				var panel =document.getElementById('projectPanel'+p.M.curProjectIdx);
 
-				panel.innerHTML+=html.join('');
+				html = T.render(this.tplProjectDir,d);
+
+				panel.innerHTML+=html;
+
+				panel.setAttribute('data-loaded','1');
 			}
 		},
 		init:function(){
 			$win.on(J.dataProject.id+'OnDataLoaded',function(e,d){
 				if (!d.isOk) {
-					J.alert.show('Error on '+J.dataProject.id+'OnDataLoaded!',{duration:1500});
+					J.alert.show('Error on '+J.dataProject.id+'OnDataLoaded!',{duration:2500});
 					console.log(d.err);
 					return;
 				};
@@ -168,7 +166,6 @@ J(function($,p,pub){
 				
 			}).on(J.dataProject.id+'OnSaved',function(e,d){
 				p.project.onProjectSaved(d);
-
 			}).on(pub.id+'OnSwitchWorkspace',function(e,d){
 				p.project.filterByWorkspace();
 			}).on(J.dataDir.id+'OnGetFiles',function(e,d){
@@ -203,6 +200,12 @@ J(function($,p,pub){
 				});
 				return false;
 			});
+
+			$("#projectPanelList").on('click','a',function(e){
+				p.project.openFile(this.getAttribute('data-path'));
+				return false;
+			});
+
 		},
 		filterByWorkspace:function(){
 			var items = J.dataProject.filterByWorkspace(p.M.curWorkspace.rootPath);
@@ -214,12 +217,11 @@ J(function($,p,pub){
 		//fill projects
 		fillProjects:function(data){
 			var len =0;
-
 			this.V.$projectNavList.empty();
 			this.V.$projectPanelList.empty();
-
+			
 			if ((len=data.length)==0) {
-				$("#projectMain").addClass('project_none');
+				this.V.$projectNavList.html(this.V.tplNoProject);
 				return;
 			};
 			var html = [],htmlPanel=[];
@@ -241,6 +243,8 @@ J(function($,p,pub){
 			//Panel state
 			var $panel = $('#projectPanel'+p.M.curProjectIdx);
 			$panel.addClass(g_clActive);
+			//Tip state
+			document.getElementById('projectTip').innerHTML = obj.path;
 			//检测是否已经读取
 			if ($panel.attr('data-loaded')!=='1') {
 				J.dataProject.getFiles(obj.path);
@@ -262,7 +266,18 @@ J(function($,p,pub){
 
 			J.dataProject.addDirAsProject(_dir);
 
-		}
+		},
+		openFile:function(filePath){
+			//获取配置的程序
+			var exe = J.dataSetting.getExeByFile(filePath);
+			if ( (!exe) || (exe.length==0) ) {
+				//系统默认打开方式
+				J.base.gui.Shell.openItem(filePath);
+				return;
+			};
+			//TODO:fix bugs here
+			cprocess.exec(exe,filePath);
+		}//openFile
 	};
 
 });

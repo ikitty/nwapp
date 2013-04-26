@@ -8,6 +8,9 @@ J(function($,p,pub){
 
 	var gui = require('nw.gui'),
 		fs = require('fs');
+
+	pub.gui = gui;
+	pub.fs =fs;
 	
 	p.V = {
 		tpl0:'Welcome',
@@ -122,6 +125,14 @@ J(function($,p,pub){
 	 */
 	pub.updateStatus = function(txt){
 		p.V.updateStatus(txt);
+	};
+	/**
+	 * 获取文件的扩展名
+	 * @param {String} filePath 文件路径
+	 */
+	pub.getFileExt = function(filePath){
+		var ext = filePath.substr(filePath.lastIndexOf('.')+1);
+		return ext;
 	};
 
 });

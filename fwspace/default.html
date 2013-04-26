@@ -56,8 +56,6 @@
 						<div class="panel_hdin">
                             <!--S 右侧操作 -->
 							<div class="pull-right cfg_acts">
-								<button id="btnCreateDir" class="btn" title="create a new project in current workspace">Create Project</button>
-								<button id="btnAddDir" class="btn" title="add a project from your work directory">Add Project</button>
 								<div class="btn-group">
 									<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i>Workspace<span id="lblWorkspace"></span></button>
 									<button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -75,10 +73,9 @@
 						<div id="projectMain" class="mod_flexbox project_main">
 							<div class="tabbable tabs-left fbox_sidebar">
 								<ul class="nav nav-tabs nav_project" id="projectNavList"></ul>
-								<div class="alert alert-error alert_noproject hide">No Projects found!</div>
 							</div>
 							<div class="fbox_bd">
-								<div class="tab-content" id="projectPanelList"></div>
+								<div class="tab-content project_panes" id="projectPanelList"></div>
 							</div>
 						</div><!--/project_main-->
 					</div>
@@ -96,6 +93,7 @@
 		</div>
 		<div class="mod_status">
 			<div id="appStatus" class="alert"></div>
+			<div id="projectTip" class="alert alert-tip tip_project"></div>
 			<div id="appTip" class="alert alert-tip" style="display:none;"></div>
 		</div>
 
@@ -160,6 +158,44 @@
 		<script type="text/x-jquery-tpl" id="tplProjectItem">
             <li data-fullPath="%projectFullPath%">%projectName%</li>
 		</script>
+		<script type="text/x-mustache-tpl" id="tplProjectDir">
+			<div class="project_dir" data-dir="{{path}}">
+				<div class="pdir_hd">
+					{{#dirObj}}
+					<h3>{{flag}} ({{cntFile}})</h3>
+					{{/dirObj}}
+				</div>
+				<div class="pdir_bd">
+				{{#isOk}}
+					{{#cntFile}}
+					<ul class="list_file clearfix">
+						{{#files}}
+						<li>
+							<div class="item_file">
+								<div class="file_hd">
+									<a href="#{{path}}" data-path="{{path}}">{{name}}</a>
+								</div>
+								<div class="file_bd">
+									{{#stat}}
+									<div class="file_meta file_size">{{size1}} kb</div>
+									<div class="file_meta file_mtime">{{mtime1}}</div>
+									{{/stat}}
+								</div>
+							</div>
+						</li>
+						{{/files}}
+					</ul>
+					{{/cntFile}}
+					{{^cntFile}}
+					<div class="alert alert-info">No files found!</div>
+					{{/cntFile}}
+				{{/isOk}}
+				{{^isOk}}
+					<div class="alert alert-error">{{errStr}}</div>
+				{{/isOk}}
+				</div>
+			</div>
+		</script>
 		<!--/Templates-->
 
 		<!-- Le javascript
@@ -169,6 +205,7 @@
 		<script src="js/lib/jquery.fanmenu.js"></script>
 		<script src="js/lib/bootstrap.min.js"></script>
 		<script src="js/lib/date.js"></script>
+		<script src="js/lib/mustache.js"></script>
 		<script src="js/lib/j.core.js"></script>
 		<script src="js/lib/j.evalTpl.js"></script>
 		<script src="js/lib/j.endsWidth.js"></script>

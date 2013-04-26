@@ -7,17 +7,7 @@ J(function($,p,pub){
 			this.$fields = this.$main.find('.field_item');
 			this.$controlGroups = this.$main.find('.control-group');
 			//文件夹路径
-			$("#ipt_exeCss1").on("change",function(e){
-				if (this.value.length>0) {
-					document.getElementById(this.getAttribute('data-target')).value = this.value;
-				};
-			});
-			$("#ipt_exeImg1").on("change",function(e){
-				if (this.value.length>0) {
-					document.getElementById(this.getAttribute('data-target')).value = this.value;
-				};
-			});
-			$("#ipt_exeLess1").on("change",function(e){
+			this.$main.find('.mod_inputfile').on("change",function(e){
 				if (this.value.length>0) {
 					document.getElementById(this.getAttribute('data-target')).value = this.value;
 				};
@@ -48,7 +38,7 @@ J(function($,p,pub){
 			this.$fields.each(function(i,o){
 				//special searchFlag proccessing
 				if (o.name==='searchFlag') {
-					data[o.name] = $.trim($(o).val()).sprit(',');
+					data[o.name] = $.trim($(o).val()).split(',');
 					return;
 				};
 				data[o.name] = $.trim($(o).val());
