@@ -185,6 +185,9 @@
 .list_file li:hover a {
   color: #02c4fb;
 }
+.list_file li.file_changing {
+  border-bottom-color: red;
+}
 .list_file a {
   color: #333;
 }

@@ -157,7 +157,7 @@ J(function($,p,pub){
 		init:function(){
 			$win.on(J.dataProject.id+'OnDataLoaded',function(e,d){
 				if (!d.isOk) {
-					J.alert.show('Error on '+J.dataProject.id+'OnDataLoaded!',{duration:2500});
+					J.alert.show('Error on '+J.dataProject.id+'OnDataLoaded!');
 					console.log(d.err);
 					return;
 				};
@@ -243,8 +243,15 @@ J(function($,p,pub){
 			//Panel state
 			var $panel = $('#projectPanel'+p.M.curProjectIdx);
 			$panel.addClass(g_clActive);
+			this.V.$activeProjectPanel = $panel;
 			//Tip state
 			document.getElementById('projectTip').innerHTML = obj.path;
+
+			//folder watching
+			J.base.fs.watch(obj.path,function(evt,fileName){
+				p.project.onWatchingDir(evt,obj.path+fileName);
+			});
+
 			//检测是否已经读取
 			if ($panel.attr('data-loaded')!=='1') {
 				J.dataProject.getFiles(obj.path);
@@ -286,7 +293,17 @@ J(function($,p,pub){
 				};
 			});
 			//console.info('child',child);
-		}//openFile
+		},//openFile
+		onWatchingDir:function(evt,fileName){
+			console.info('watching',evt+':'+fileName);
+			this.V.$activeProjectPanel.find("li").each(function(i,o){
+				var data_path = o.getAttribute('data-path');
+				if (data_path===fileName) {
+					$(o).addClass('file_changing');
+					return false;
+				};
+			});
+		}//onWatchingDir
 	};
 
 	/**
