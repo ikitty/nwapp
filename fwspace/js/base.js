@@ -91,12 +91,18 @@ J(function($,p,pub){
 			});
 		}//initTray
 	};
-
+	/**
+	 * 重载当前窗口
+	 */
 	pub.reload = function(){
 		var win = gui.Window.get();
 		win.reload();
 	};
-
+	/**
+	 * 在页脚状态栏显示提示信息
+	 * @param {String} txt 提示信息
+	 * @param {int} timeout 提示显示时长
+	 */
 	pub.showTip = function(txt,timeout){
 		clearTimeout(p.M.tipTimer);
 		p.V.$tip.html(txt).show();

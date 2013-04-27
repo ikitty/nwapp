@@ -256,8 +256,10 @@ J(function($,p,pub){
 				J.alert.show(d.err.toString());
 				return;
 			};
-
+			// add nav menu
 			this.V.$projectNavList.append(J.evalTpl(this.V.tplNavItem,d.item,true));
+			// add project panel
+			this.V.$projectPanelList.append(J.evalTpl(this.V.tplProjectPanel,d.item,true));
 		},
 		openDir:function(d){
 			$("#ipt_projectFolder").trigger('click',[d]);
@@ -275,9 +277,24 @@ J(function($,p,pub){
 				J.base.gui.Shell.openItem(filePath);
 				return;
 			};
-			//TODO:fix bugs here
-			cprocess.exec(exe,filePath);
+			//reference:http://nodejs.org/api/child_process.html#child_process_child_process_execfile_file_args_options_callback
+			var child = cprocess.execFile(exe,[filePath],function(err,stdout,stderr){
+				//console.info('stdout',stdout);
+				//console.info('stderr',stderr);
+				if (err!==null) {
+					J.alert.show(err.toString());
+				};
+			});
+			//console.info('child',child);
 		}//openFile
+	};
+
+	/**
+	 * 添加一个工作项目
+	 * @param {String} _dir 目录
+	 */
+	pub.addProject = function(_dir){
+		p.project.addProject(_dir);
 	};
 
 });

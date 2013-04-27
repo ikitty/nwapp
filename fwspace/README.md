@@ -14,3 +14,50 @@ fwspace
 
 所以，所有页面的入口，应该监听window的dataWorkspaceOnDataInited事件，在事件处理函数中进行
 页面逻辑处理。
+
+## 模块关键接口
+
+### J.base
+
+1. J.base.reload - 重载当前窗口
+2. J.base.showTip - 显示提示信息
+
+	``` js
+
+		/**
+		 * 在页脚状态栏显示提示信息
+		 * @param {String} txt 提示信息
+		 * @param {int} timeout 提示显示时长
+		 */
+		pub.showTip = function(txt,timeout){
+			clearTimeout(p.M.tipTimer);
+			p.V.$tip.html(txt).show();
+			p.M.isBusy=true;
+			if (!timeout) {
+				return;
+			};
+			p.M.tipTimer = setTimeout(function(){
+
+				pub.hideTip();
+
+			},timeout);
+		};
+
+	```
+
+
+### J.home
+
+1. J.home.addProject(_dir)
+
+	``` js
+
+		/**
+		 * 添加一个工作项目
+		 * @param {String} _dir 目录
+		 */
+		pub.addProject = function(_dir){
+			p.project.addProject(_dir);
+		};
+
+	```
