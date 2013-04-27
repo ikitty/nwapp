@@ -263,6 +263,9 @@ J(function($,p,pub){
 				J.alert.show(d.err.toString());
 				return;
 			};
+			if (!d.item) {
+				return;
+			};
 			// add nav menu
 			this.V.$projectNavList.append(J.evalTpl(this.V.tplNavItem,d.item,true));
 			// add project panel
