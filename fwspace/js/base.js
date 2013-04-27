@@ -7,7 +7,7 @@ J(function($,p,pub){
 	pub.initFile = pub.dataRoot+"app.ini";
 
 	var gui = require('nw.gui'),
-		fs = require('fs');
+		fs = require('fs-extra');
 
 	pub.gui = gui;
 	pub.fs =fs;
