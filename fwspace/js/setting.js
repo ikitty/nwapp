@@ -20,7 +20,7 @@ J(function($,p,pub){
 
 			for (var c in data) {
 				//special searchFlag proccessing
-				if (c==='searchFlag') {
+				if ( (c==='searchFlag') || (c==='ignoreFolders') ) {
 					this.$fields.filter('.field_'+c).val(data[c].join(','));
 					continue;
 				};
@@ -37,7 +37,7 @@ J(function($,p,pub){
 			var data = {};
 			this.$fields.each(function(i,o){
 				//special searchFlag proccessing
-				if (o.name==='searchFlag') {
+				if ( (o.name==='searchFlag') || (o.name==='ignoreFolders') ) {
 					data[o.name] = $.trim($(o).val()).split(',');
 					return;
 				};

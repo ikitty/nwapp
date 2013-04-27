@@ -18,6 +18,7 @@ J(function($,p,pub){
 			'searchFlag':['img','html','css','less','psd','images'],
 			//检索的文件扩展名
 			'ext':['.jpg','.gif','.png','.html','.css','.less','.js'],
+			'ignoreFolders':['.svn'],
 			'createdAt':new Date().toString('yyyy-MM-dd HH:mm:ss'),
 			'modifiedAt':new Date().toString('yyyy-MM-dd HH:mm:ss')
 		}

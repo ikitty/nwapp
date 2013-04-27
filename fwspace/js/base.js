@@ -141,4 +141,24 @@ J(function($,p,pub){
 		return ext;
 	};
 
+	/**
+	* 指定的文件是否是图片
+	* @public
+	* @function
+	* @name J.base#isImg
+	* @param {String} file 文件路径
+	*/
+	pub.isImg = function(file) {
+	    file = file.toLowerCase();
+	    var isImg = false;
+	    var arrImg = ['.jpg','.png','.gif','.jpeg'];
+	    for (var i = 0; i < arrImg.length; i++) {
+	        isImg = (file.substr(file.lastIndexOf(arrImg[i])) == arrImg[i]);
+	        if (isImg) {
+	            break;
+	        }
+	    }
+	    return isImg;
+	};
+
 });

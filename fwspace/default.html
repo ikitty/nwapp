@@ -171,15 +171,26 @@
 					<ul class="list_file clearfix">
 						{{#files}}
 						<li data-path="{{path}}">
+							{{#isImg}}
+							<div class="item_file item_img" style="background-image:url('{{url}}')">
+							{{/isImg}}
+							{{^isImg}}
 							<div class="item_file">
-								<div class="file_hd">
-									<a href="#{{path}}" data-path="{{path}}">{{name}}</a>
+							{{/isImg}}
+								<div class="com_bd file_bd">
+									<div class="com_bg"></div>
+									<div class="com_bd">
+										{{#stat}}
+										<div class="file_meta file_size">{{size1}} kb</div>
+										<div class="file_meta file_mtime">{{mtime1}}</div>
+										{{/stat}}
+									</div>
 								</div>
-								<div class="file_bd">
-									{{#stat}}
-									<div class="file_meta file_size">{{size1}} kb</div>
-									<div class="file_meta file_mtime">{{mtime1}}</div>
-									{{/stat}}
+								<div class="file_ft">
+									<div class="com_bg"></div>
+									<div class="com_bd ft_bd">
+										<a href="#{{path}}" data-path="{{path}}">{{name}}</a>
+									</div>
 								</div>
 							</div>
 						</li>

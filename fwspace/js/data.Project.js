@@ -183,21 +183,21 @@ J(function($,p,pub){
 			flags = J.dataSetting.data.searchFlag,
 			flags1 = [],
 			flagIndex = 0,
-			flagFound =false,
+			flagFoundIndex =false,
 			len1 = flags.length;
 
 		//获取项目类型
 		for (var i = len1 - 1; i >= 0; i--) {
 
-			if ( (!flagFound) && ( flagIndex = _dir.indexOf('\\'+flags[i]+'\\') ) >0 ) {
+			if ( (!flagFoundIndex) && ( flagIndex = _dir.indexOf('\\'+flags[i]+'\\') ) >0 ) {
 				projectType=1;
-				flagFound =true;
+				flagFoundIndex =i;
 				topFolders.push({
 					'flag':flags[i],
 					'path':_dir
 				});
 			};
-			if (projectType!==1) {
+			if (i!==flagFoundIndex) {
 				flags1.push(flags[i]);
 			};
 		};
@@ -239,7 +239,10 @@ J(function($,p,pub){
 		//read all files according to the J.dataSetting.data.searchFlag
 		len1 = topFolders.length;
 		for (var i = len1 - 1; i >= 0; i--) {
-			J.dataDir.getFiles(topFolders[i],true);
+			J.dataDir.getFiles(topFolders[i],{
+				includeSubDir:true,
+				ignoreDirs:J.dataSetting.data.ignoreFolders
+			});
 		};
 
 	};
