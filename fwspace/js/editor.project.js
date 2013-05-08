@@ -140,6 +140,9 @@ J(function($,p,pub){
 
             //create dirs
             var dirs = J.data.createDirs({'rootPath': data.rootPath, 'name': data.name});
+
+            // create init file
+            J.data.createInitFile({'rootPath': data.rootPath, 'name': data.name});
 		},
 		validate:function(data){
 			//validate data.name

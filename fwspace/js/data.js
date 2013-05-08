@@ -8,7 +8,7 @@
 J(function($,p,pub){
 
 	pub.id="data";
-    var fs = require('fs');
+    var fs = require('fs-extra');
 
 	p.C = {
 		init:function(){
@@ -171,6 +171,37 @@ J(function($,p,pub){
             fs.mkdir(path.rootPath + k + '\\' + path.name, 0777, function () {
                 console.log('mkdir ok') ;
             }) ;
+        }
+    };
+
+    /**
+     * 生成模版文件(html,css)
+     *
+     * @param {Object} path 路径对象，包含跟路径，当前目录名称
+     **/
+    pub.createInitFile = function (path) {
+        // 定义模版文件路径
+        var template = [
+            {'type': 'html', 'path': 'html\\common\\temple.html' },
+            {'type': 'css', 'path': 'css\\common\\temple.css' }
+        ];
+
+        for (var i = 0, k = null; k = template[i] ; i++ ) {
+            (function (k) {
+                var srcPath = path.rootPath + k.path ;
+                fs.exists(srcPath, function (exists) {
+                    if (exists) {
+                        var targetPath = path.rootPath + k.type + '\\' + path.name + '\\' + 'index.' + k.type;
+                        fs.copy(srcPath, targetPath, function (err) {
+                            if (err) {
+                                console.log(err) ;
+                            }
+                        });
+                    }else {
+                        console.log('模板文件不存在，请尝试更新SVN') ;
+                    }
+                });
+            })(k);
         }
     };
 });
